@@ -1,0 +1,36 @@
+@model Equipo
+
+<div class="card h-100">
+    <div class="card-body d-flex flex-column">
+        <div class="d-flex align-items-center gap-3 mb-3">
+            @if (!string.IsNullOrEmpty(Model.LogoUrl))
+            {
+                <img src="@Model.LogoUrl" class="equipo-logo" alt="@Model.Nombre" />
+            }
+            else
+            {
+                <div class="equipo-logo d-flex align-items-center justify-content-center bg-light">
+                    <i class="bi bi-shield-fill text-secondary fs-3"></i>
+                </div>
+            }
+            <div>
+                <h5 class="mb-0 fw-bold text-primary">@Model.Nombre</h5>
+                <small class="text-muted"><i class="bi bi-geo-alt"></i> @Model.Pais?.Nombre</small>
+            </div>
+        </div>
+        <ul class="list-unstyled small mb-3">
+            <li><i class="bi bi-person-badge"></i> <strong>D.T.:</strong> @Model.DirectorTecnico</li>
+            <li><i class="bi bi-calendar-event"></i> <strong>Fundación:</strong> @Model.AnioFundacion</li>
+            <li><i class="bi bi-flag"></i> <strong>Grupo:</strong> <span class="badge badge-azul">@Model.GrupoMundialista</span></li>
+        </ul>
+        <div class="d-flex justify-content-between mb-3 text-center">
+            <div><div class="fw-bold text-primary">@Model.Jugadores.Count</div><small class="text-muted">Jugadores</small></div>
+            <div><div class="fw-bold text-danger">@Model.Cromos.Count</div><small class="text-muted">Cromos</small></div>
+        </div>
+        <div class="mt-auto d-flex gap-1">
+            <a asp-controller="Equipos" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-wcs flex-fill"><i class="bi bi-eye"></i> Ver</a>
+            <a asp-controller="Equipos" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary flex-fill"><i class="bi bi-pencil"></i></a>
+            <a asp-controller="Equipos" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger flex-fill"><i class="bi bi-trash"></i></a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,75 @@
+@model Cromo
+@{
+    ViewData["Title"] = "Nuevo cromo";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-plus-circle"></i> Nuevo cromo</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="NumeroCromo" class="form-label"></label>
+                    <input asp-for="NumeroCromo" class="form-control" />
+                    <span asp-validation-for="NumeroCromo" class="text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Edicion" class="form-label"></label>
+                    <input asp-for="Edicion" class="form-control" />
+                    <span asp-validation-for="Edicion" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ValorMercado" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="ValorMercado" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ValorMercado" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="JugadorId" class="form-label"></label>
+                    <select asp-for="JugadorId" class="form-select" asp-items="ViewBag.Jugadores">
+                        <option value="">-- Jugador --</option>
+                    </select>
+                    <span asp-validation-for="JugadorId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="EquipoId" class="form-label"></label>
+                    <select asp-for="EquipoId" class="form-select" asp-items="ViewBag.Equipos">
+                        <option value="">-- Equipo --</option>
+                    </select>
+                    <span asp-validation-for="EquipoId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="AlbumId" class="form-label"></label>
+                    <select asp-for="AlbumId" class="form-select" asp-items="ViewBag.Albumes">
+                        <option value="">-- Álbum --</option>
+                    </select>
+                    <span asp-validation-for="AlbumId" class="text-danger"></span>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="FotoUrl" class="form-label"></label>
+                    <input asp-for="FotoUrl" class="form-control" placeholder="https://... (o sube un archivo)" />
+                    <span asp-validation-for="FotoUrl" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label for="fotoFile" class="form-label">Subir foto (opcional)</label>
+                    <input type="file" name="fotoFile" id="fotoFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-wcs"><i class="bi bi-save"></i> Guardar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

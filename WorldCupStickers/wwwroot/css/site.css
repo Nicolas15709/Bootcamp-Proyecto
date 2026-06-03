@@ -1,31 +1,259 @@
-html {
-  font-size: 14px;
+:root {
+    --wcs-azul: #0B1F3A;
+    --wcs-azul-2: #13294e;
+    --wcs-dorado: #D4AF37;
+    --wcs-dorado-claro: #e6c869;
+    --wcs-blanco: #FFFFFF;
+    --wcs-gris: #F5F7FA;
+    --wcs-rojo: #C8102E;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+html, body {
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--wcs-gris);
+    color: #1f2a3a;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ---------- Navbar ---------- */
+.wcs-navbar {
+    background: linear-gradient(90deg, var(--wcs-azul) 0%, var(--wcs-azul-2) 100%);
+    border-bottom: 3px solid var(--wcs-dorado);
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+.wcs-navbar .navbar-brand {
+    font-size: 1.25rem;
+    letter-spacing: .3px;
+}
+
+.wcs-navbar .nav-link {
+    color: rgba(255, 255, 255, .85) !important;
+    font-weight: 500;
+    border-radius: .4rem;
+    margin: 0 .1rem;
+    transition: all .15s ease-in-out;
+}
+
+.wcs-navbar .nav-link:hover {
+    color: #fff !important;
+    background-color: rgba(212, 175, 55, .18);
+}
+
+.wcs-navbar .nav-link.active {
+    color: var(--wcs-azul) !important;
+    background-color: var(--wcs-dorado);
+}
+
+/* ---------- Layout ---------- */
+.wcs-main {
+    flex: 1 0 auto;
+    padding-top: 90px;
+    padding-bottom: 2rem;
+}
+
+.wcs-footer {
+    background: var(--wcs-azul);
+    color: var(--wcs-blanco);
+    border-top: 3px solid var(--wcs-dorado);
+}
+
+/* ---------- Encabezado de página ---------- */
+.wcs-page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: .75rem;
+    border-bottom: 2px solid rgba(11, 31, 58, .1);
+}
+
+.wcs-page-header h1 {
+    color: var(--wcs-azul);
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.7rem;
+}
+
+.wcs-page-header h1 i {
+    color: var(--wcs-dorado);
+}
+
+/* ---------- Botones ---------- */
+.btn-wcs {
+    background-color: var(--wcs-dorado);
+    border-color: var(--wcs-dorado);
+    color: var(--wcs-azul);
+    font-weight: 600;
+}
+
+.btn-wcs:hover {
+    background-color: var(--wcs-dorado-claro);
+    border-color: var(--wcs-dorado-claro);
+    color: var(--wcs-azul);
+}
+
+.btn-outline-wcs {
+    border-color: var(--wcs-azul);
+    color: var(--wcs-azul);
+    font-weight: 600;
+}
+
+.btn-outline-wcs:hover {
+    background-color: var(--wcs-azul);
+    color: #fff;
+}
+
+/* ---------- Tarjetas / paneles ---------- */
+.card {
+    border: none;
+    border-radius: .8rem;
+    box-shadow: 0 2px 10px rgba(11, 31, 58, .08);
+}
+
+.card-header.wcs-card-header {
+    background: var(--wcs-azul);
+    color: #fff;
+    border-radius: .8rem .8rem 0 0 !important;
+    font-weight: 600;
+}
+
+/* ---------- Tablas ---------- */
+.table thead {
+    background-color: var(--wcs-azul);
+    color: #fff;
+}
+
+.table thead th {
+    border-color: var(--wcs-azul-2);
+}
+
+/* ---------- Stat cards del dashboard ---------- */
+.wcs-stat {
+    border-radius: .9rem;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+}
+
+.wcs-stat .wcs-stat-icon {
+    font-size: 2.6rem;
+    opacity: .35;
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.wcs-stat .wcs-stat-num {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.wcs-bg-azul   { background: linear-gradient(135deg, #0B1F3A, #1d3a66); }
+.wcs-bg-dorado { background: linear-gradient(135deg, #b8941f, #D4AF37); }
+.wcs-bg-rojo   { background: linear-gradient(135deg, #9c0d24, #C8102E); }
+.wcs-bg-verde  { background: linear-gradient(135deg, #146c43, #1a9d63); }
+.wcs-bg-morado { background: linear-gradient(135deg, #4b2a73, #6f42c1); }
+
+/* ---------- Carta de cromo coleccionable ---------- */
+.cromo-card {
+    border-radius: .9rem;
+    background: #fff;
+    border: 3px solid var(--wcs-dorado);
+    box-shadow: 0 4px 14px rgba(11, 31, 58, .15);
+    overflow: hidden;
+    transition: transform .18s ease, box-shadow .18s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.cromo-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 24px rgba(212, 175, 55, .35);
+}
+
+.cromo-card .cromo-img-wrap {
+    background: linear-gradient(135deg, var(--wcs-azul), var(--wcs-azul-2));
+    position: relative;
+    aspect-ratio: 3 / 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cromo-card .cromo-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cromo-card .cromo-numero {
+    position: absolute;
+    top: .5rem;
+    left: .5rem;
+    background: var(--wcs-dorado);
+    color: var(--wcs-azul);
+    font-weight: 700;
+    border-radius: .4rem;
+    padding: .1rem .5rem;
+    font-size: .85rem;
+}
+
+.cromo-card .cromo-body {
+    padding: .85rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.cromo-card .cromo-nombre {
+    font-weight: 700;
+    color: var(--wcs-azul);
+    margin-bottom: .15rem;
+}
+
+.cromo-card .cromo-valor {
+    color: var(--wcs-rojo);
+    font-weight: 700;
+}
+
+.badge-dorado {
+    background-color: var(--wcs-dorado);
+    color: var(--wcs-azul);
+}
+
+.badge-azul {
+    background-color: var(--wcs-azul);
+    color: #fff;
+}
+
+/* ---------- Logo de equipo ---------- */
+.equipo-logo {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: .5rem;
+    border: 1px solid rgba(0,0,0,.08);
+    padding: 4px;
+}
+
+.equipo-logo-lg {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    background: #fff;
+    border-radius: .8rem;
+    border: 2px solid var(--wcs-dorado);
+    padding: 8px;
 }

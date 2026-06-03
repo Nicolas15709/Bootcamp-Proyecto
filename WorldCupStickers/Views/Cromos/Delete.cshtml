@@ -1,0 +1,35 @@
+@model Cromo
+@{
+    ViewData["Title"] = "Eliminar cromo";
+}
+
+<div class="wcs-page-header">
+    <h1 class="text-danger"><i class="bi bi-trash"></i> Eliminar cromo</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card border-danger">
+    <div class="card-body">
+        <p class="lead">¿Estás seguro de que deseas eliminar este cromo?</p>
+        <div class="row g-3 align-items-center">
+            <div class="col-md-3">
+                <partial name="_CardCromo" model="Model" />
+            </div>
+            <div class="col-md-9">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Número</dt><dd class="col-sm-8">#@Model.NumeroCromo.ToString("D3")</dd>
+                    <dt class="col-sm-4">Jugador</dt><dd class="col-sm-8">@Model.Jugador?.Nombre</dd>
+                    <dt class="col-sm-4">Equipo</dt><dd class="col-sm-8">@Model.Equipo?.Nombre</dd>
+                    <dt class="col-sm-4">Álbum</dt><dd class="col-sm-8">@Model.Album?.Nombre</dd>
+                    <dt class="col-sm-4">Valor</dt><dd class="col-sm-8 text-danger fw-bold">@Model.ValorMercado.ToString("C")</dd>
+                </dl>
+            </div>
+        </div>
+
+        <form asp-action="Delete" class="mt-4">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger"><i class="bi bi-trash"></i> Sí, eliminar</button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,95 @@
+@model Equipo
+@{
+    ViewData["Title"] = $"Equipo - {Model.Nombre}";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-shield-fill"></i> @Model.Nombre</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4 text-center">
+        <div class="card">
+            <div class="card-body">
+                @if (!string.IsNullOrEmpty(Model.LogoUrl))
+                {
+                    <img src="@Model.LogoUrl" class="equipo-logo-lg mb-3" alt="@Model.Nombre" />
+                }
+                else
+                {
+                    <div class="equipo-logo-lg mx-auto mb-3 d-flex align-items-center justify-content-center bg-light">
+                        <i class="bi bi-shield-fill text-secondary display-4"></i>
+                    </div>
+                }
+                <h4 class="fw-bold text-primary">@Model.Nombre</h4>
+                <dl class="row text-start mt-3 mb-0">
+                    <dt class="col-6">País</dt><dd class="col-6">@Model.Pais?.Nombre</dd>
+                    <dt class="col-6">Director técnico</dt><dd class="col-6">@Model.DirectorTecnico</dd>
+                    <dt class="col-6">Fundación</dt><dd class="col-6">@Model.AnioFundacion</dd>
+                    <dt class="col-6">Grupo</dt><dd class="col-6"><span class="badge badge-azul">@Model.GrupoMundialista</span></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header wcs-card-header"><i class="bi bi-person-fill"></i> Jugadores (@Model.Jugadores.Count)</div>
+            <div class="card-body">
+                @if (!Model.Jugadores.Any())
+                {
+                    <p class="text-muted mb-0">Sin jugadores registrados.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead><tr><th>#</th><th>Nombre</th><th>Posición</th><th></th></tr></thead>
+                            <tbody>
+                                @foreach (var j in Model.Jugadores.OrderBy(j => j.NumeroCamiseta))
+                                {
+                                    <tr>
+                                        <td><span class="badge badge-dorado">@j.NumeroCamiseta</span></td>
+                                        <td class="fw-semibold">@j.Nombre</td>
+                                        <td>@j.Posicion</td>
+                                        <td><a asp-controller="Jugadores" asp-action="Details" asp-route-id="@j.Id" class="btn btn-sm btn-outline-wcs"><i class="bi bi-eye"></i></a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-card-image"></i> Cromos del equipo (@Model.Cromos.Count)</div>
+            <div class="card-body">
+                @if (!Model.Cromos.Any())
+                {
+                    <p class="text-muted mb-0">Sin cromos asociados.</p>
+                }
+                else
+                {
+                    <div class="row g-2">
+                        @foreach (var c in Model.Cromos.OrderBy(c => c.NumeroCromo))
+                        {
+                            <div class="col-6 col-md-4">
+                                <a asp-controller="Cromos" asp-action="Details" asp-route-id="@c.Id" class="text-decoration-none">
+                                    <div class="border rounded p-2 d-flex align-items-center gap-2">
+                                        <span class="badge badge-dorado">#@c.NumeroCromo</span>
+                                        <span class="text-truncate">@c.Jugador?.Nombre</span>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

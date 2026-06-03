@@ -1,0 +1,88 @@
+@model Pais
+@{
+    ViewData["Title"] = $"País - {Model.Nombre}";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-globe-americas"></i> @Model.Nombre</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-info-circle"></i> Información general</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-6">Continente</dt><dd class="col-6">@Model.Continente</dd>
+                    <dt class="col-6">Código FIFA</dt><dd class="col-6"><span class="badge badge-azul">@Model.CodigoFifa</span></dd>
+                    <dt class="col-6">Ranking FIFA</dt><dd class="col-6"><span class="badge badge-dorado">#@Model.RankingFifa</span></dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="row g-3 mt-1">
+            <div class="col-6">
+                <div class="card text-center p-3">
+                    <div class="fs-3 fw-bold text-primary">@Model.Equipos.Count</div>
+                    <div class="text-muted small">Equipos</div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="card text-center p-3">
+                    <div class="fs-3 fw-bold text-primary">@ViewBag.TotalJugadores</div>
+                    <div class="text-muted small">Jugadores</div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="card text-center p-3">
+                    <div class="fs-3 fw-bold text-danger">@ViewBag.TotalCromos</div>
+                    <div class="text-muted small">Cromos asociados</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-shield-fill"></i> Equipos de @Model.Nombre</div>
+            <div class="card-body">
+                @if (!Model.Equipos.Any())
+                {
+                    <p class="text-muted mb-0">Este país no tiene equipos registrados.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead>
+                                <tr><th></th><th>Equipo</th><th>D.T.</th><th>Grupo</th><th class="text-center">Jugadores</th><th></th></tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var eq in Model.Equipos)
+                                {
+                                    <tr>
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(eq.LogoUrl))
+                                            {
+                                                <img src="@eq.LogoUrl" class="equipo-logo" alt="@eq.Nombre" />
+                                            }
+                                        </td>
+                                        <td class="fw-semibold">@eq.Nombre</td>
+                                        <td>@eq.DirectorTecnico</td>
+                                        <td><span class="badge badge-azul">@eq.GrupoMundialista</span></td>
+                                        <td class="text-center">@eq.Jugadores.Count</td>
+                                        <td><a asp-controller="Equipos" asp-action="Details" asp-route-id="@eq.Id" class="btn btn-sm btn-outline-wcs"><i class="bi bi-eye"></i></a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

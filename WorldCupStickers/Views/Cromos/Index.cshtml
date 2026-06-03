@@ -1,0 +1,61 @@
+@model CromoFiltroViewModel
+@{
+    ViewData["Title"] = "Cromos";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-card-image"></i> Catálogo de cromos</h1>
+    <a asp-action="Create" class="btn btn-wcs"><i class="bi bi-plus-circle"></i> Nuevo cromo</a>
+</div>
+
+<form method="get" class="card card-body mb-4">
+    <div class="row g-2">
+        <div class="col-md-2">
+            <input type="number" name="numeroCromo" value="@Model.NumeroCromo" class="form-control" placeholder="N° cromo" />
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="jugador" value="@Model.Jugador" class="form-control" placeholder="Jugador..." />
+        </div>
+        <div class="col-md-2">
+            <select name="equipoId" class="form-select" asp-items="Model.Equipos">
+                <option value="">Equipo</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="paisId" class="form-select" asp-items="Model.Paises">
+                <option value="">País</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="albumId" class="form-select" asp-items="Model.Albumes">
+                <option value="">Álbum</option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <select name="edicion" class="form-select" asp-items="Model.Ediciones">
+                <option value="">Ed.</option>
+            </select>
+        </div>
+    </div>
+    <div class="mt-2 d-flex gap-2">
+        <button type="submit" class="btn btn-outline-wcs"><i class="bi bi-funnel"></i> Filtrar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i> Limpiar</a>
+    </div>
+</form>
+
+@if (!Model.Cromos.Any())
+{
+    <div class="alert alert-info"><i class="bi bi-info-circle"></i> No se encontraron cromos con esos filtros.</div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var cromo in Model.Cromos)
+        {
+            <div class="col-12 col-md-6 col-lg-3">
+                <partial name="_CardCromo" model="cromo" />
+            </div>
+        }
+    </div>
+    <p class="text-muted small mt-3">@Model.Cromos.Count() cromo(s) en el catálogo.</p>
+}

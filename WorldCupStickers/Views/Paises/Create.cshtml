@@ -1,0 +1,47 @@
+@model Pais
+@{
+    ViewData["Title"] = "Nuevo país";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-plus-circle"></i> Nuevo país</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Nombre" class="form-label"></label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Continente" class="form-label"></label>
+                    <input asp-for="Continente" class="form-control" />
+                    <span asp-validation-for="Continente" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="CodigoFifa" class="form-label"></label>
+                    <input asp-for="CodigoFifa" class="form-control text-uppercase" maxlength="3" />
+                    <span asp-validation-for="CodigoFifa" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="RankingFifa" class="form-label"></label>
+                    <input asp-for="RankingFifa" class="form-control" />
+                    <span asp-validation-for="RankingFifa" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-wcs"><i class="bi bi-save"></i> Guardar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

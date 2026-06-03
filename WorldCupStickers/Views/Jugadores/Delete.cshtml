@@ -1,0 +1,37 @@
+@model Jugador
+@{
+    ViewData["Title"] = "Eliminar jugador";
+}
+
+<div class="wcs-page-header">
+    <h1 class="text-danger"><i class="bi bi-trash"></i> Eliminar jugador</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card border-danger">
+    <div class="card-body">
+        <p class="lead">¿Estás seguro de que deseas eliminar este jugador?</p>
+        <dl class="row">
+            <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>
+            <dt class="col-sm-3">Posición</dt><dd class="col-sm-9">@Model.Posicion</dd>
+            <dt class="col-sm-3">Equipo</dt><dd class="col-sm-9">@Model.Equipo?.Nombre</dd>
+            <dt class="col-sm-3">Cromos asociados</dt><dd class="col-sm-9">@Model.Cromos.Count</dd>
+        </dl>
+
+        @if (Model.Cromos.Any())
+        {
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Este jugador tiene <strong>@Model.Cromos.Count cromo(s)</strong> asociado(s). Elimínalos primero.
+            </div>
+        }
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger" @(Model.Cromos.Any() ? "disabled" : "")>
+                <i class="bi bi-trash"></i> Sí, eliminar
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
