@@ -1,103 +1,112 @@
 @model DashboardViewModel
 @{
-    ViewData["Title"] = "Inicio";
+    ViewData["Title"] = "Dashboard";
 }
 
-<div class="p-4 mb-4 rounded-3 text-white" style="background: linear-gradient(120deg, #0B1F3A, #13294e); border-bottom: 4px solid var(--wcs-dorado);">
-    <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-        <div>
-            <h1 class="fw-bold mb-1"><i class="bi bi-trophy-fill text-warning"></i> World Cup Sticker Manager</h1>
-            <p class="mb-0 text-light">Gestor de Cromos Mundialistas — administra tu álbum del mundial.</p>
-        </div>
-        <div class="d-flex gap-2">
-            <a asp-controller="Cromos" asp-action="Create" class="btn btn-wcs"><i class="bi bi-plus-circle"></i> Nuevo cromo</a>
-            <a asp-controller="Albumes" asp-action="Index" class="btn btn-outline-light"><i class="bi bi-collection"></i> Ver álbumes</a>
+{{!-- Hero ──────────────────────────────────────────────── --}}
+<div class="wcs-hero fade-up">
+    <div class="row align-items-center">
+        <div class="col-lg-8">
+            <div class="hero-eyebrow">Gestor de Cromos Mundialistas</div>
+            <h1 class="hero-title">WORLD CUP<br><span>STICKER MANAGER</span></h1>
+            <p class="hero-sub">Administra tu colección de cromos del mundial. Jugadores, equipos, álbumes y mucho más.</p>
+            <div class="d-flex gap-2 mt-3">
+                <a asp-controller="Cromos" asp-action="Create" class="btn btn-wcs">
+                    <i class="bi bi-plus-circle me-1"></i>Nuevo cromo
+                </a>
+                <a asp-controller="Albumes" asp-action="Index" class="btn btn-outline-wcs">
+                    Ver álbumes
+                </a>
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Stat cards -->
-<div class="row g-3 mb-4">
-    <div class="col-6 col-lg">
-        <a asp-controller="Paises" asp-action="Index" class="text-decoration-none">
-            <div class="wcs-stat wcs-bg-azul p-3">
-                <i class="bi bi-globe-americas wcs-stat-icon"></i>
-                <div class="wcs-stat-num">@Model.TotalPaises</div>
-                <div>Países</div>
-            </div>
+{{!-- Stat cards ────────────────────────────────────────── --}}
+<div class="row g-3 mb-5 stagger">
+    <div class="col-6 col-md-4 col-lg fade-up">
+        <a asp-controller="Paises" asp-action="Index" class="stat-card stat-azul">
+            <i class="bi bi-globe-americas stat-icon"></i>
+            <div class="stat-num" data-target="@Model.TotalPaises">@Model.TotalPaises</div>
+            <div class="stat-label">Países</div>
         </a>
     </div>
-    <div class="col-6 col-lg">
-        <a asp-controller="Equipos" asp-action="Index" class="text-decoration-none">
-            <div class="wcs-stat wcs-bg-verde p-3">
-                <i class="bi bi-shield-fill wcs-stat-icon"></i>
-                <div class="wcs-stat-num">@Model.TotalEquipos</div>
-                <div>Equipos</div>
-            </div>
+    <div class="col-6 col-md-4 col-lg fade-up">
+        <a asp-controller="Equipos" asp-action="Index" class="stat-card stat-verde">
+            <i class="bi bi-shield-fill stat-icon"></i>
+            <div class="stat-num" data-target="@Model.TotalEquipos">@Model.TotalEquipos</div>
+            <div class="stat-label">Equipos</div>
         </a>
     </div>
-    <div class="col-6 col-lg">
-        <a asp-controller="Jugadores" asp-action="Index" class="text-decoration-none">
-            <div class="wcs-stat wcs-bg-morado p-3">
-                <i class="bi bi-person-fill wcs-stat-icon"></i>
-                <div class="wcs-stat-num">@Model.TotalJugadores</div>
-                <div>Jugadores</div>
-            </div>
+    <div class="col-6 col-md-4 col-lg fade-up">
+        <a asp-controller="Jugadores" asp-action="Index" class="stat-card stat-morado">
+            <i class="bi bi-person-fill stat-icon"></i>
+            <div class="stat-num" data-target="@Model.TotalJugadores">@Model.TotalJugadores</div>
+            <div class="stat-label">Jugadores</div>
         </a>
     </div>
-    <div class="col-6 col-lg">
-        <a asp-controller="Cromos" asp-action="Index" class="text-decoration-none">
-            <div class="wcs-stat wcs-bg-rojo p-3">
-                <i class="bi bi-card-image wcs-stat-icon"></i>
-                <div class="wcs-stat-num">@Model.TotalCromos</div>
-                <div>Cromos</div>
-            </div>
+    <div class="col-6 col-md-4 col-lg fade-up">
+        <a asp-controller="Cromos" asp-action="Index" class="stat-card stat-rojo">
+            <i class="bi bi-card-image stat-icon"></i>
+            <div class="stat-num" data-target="@Model.TotalCromos">@Model.TotalCromos</div>
+            <div class="stat-label">Cromos</div>
         </a>
     </div>
-    <div class="col-6 col-lg">
-        <a asp-controller="Albumes" asp-action="Index" class="text-decoration-none">
-            <div class="wcs-stat wcs-bg-dorado p-3 text-dark">
-                <i class="bi bi-collection-fill wcs-stat-icon"></i>
-                <div class="wcs-stat-num">@Model.TotalAlbumes</div>
-                <div>Álbumes</div>
-            </div>
+    <div class="col-6 col-md-4 col-lg fade-up">
+        <a asp-controller="Albumes" asp-action="Index" class="stat-card stat-dorado">
+            <i class="bi bi-collection-fill stat-icon"></i>
+            <div class="stat-num" data-target="@Model.TotalAlbumes">@Model.TotalAlbumes</div>
+            <div class="stat-label">Álbumes</div>
         </a>
     </div>
 </div>
 
-<!-- Últimos cromos -->
+{{!-- Últimos cromos ────────────────────────────────────── --}}
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h3 class="text-primary fw-bold mb-0"><i class="bi bi-stars"></i> Últimos cromos agregados</h3>
-    <a asp-controller="Cromos" asp-action="Index" class="btn btn-sm btn-outline-wcs">Ver todos <i class="bi bi-arrow-right"></i></a>
+    <h2 class="section-title">
+        <span class="title-accent"></span>Últimos cromos
+    </h2>
+    <a asp-controller="Cromos" asp-action="Index" class="btn btn-outline-wcs btn-sm">
+        Ver todos <i class="bi bi-arrow-right ms-1"></i>
+    </a>
 </div>
+
 @if (!Model.UltimosCromos.Any())
 {
     <div class="alert alert-info">Aún no hay cromos registrados.</div>
 }
 else
 {
-    <div class="row g-4 mb-4">
+    <div class="cromos-grid mb-5 stagger">
         @foreach (var cromo in Model.UltimosCromos)
         {
-            <div class="col-6 col-md-4 col-lg-3">
+            <div class="fade-up">
                 <partial name="_CardCromo" model="cromo" />
             </div>
         }
     </div>
 }
 
-<!-- Equipos destacados -->
-<h3 class="text-primary fw-bold mb-3"><i class="bi bi-shield-shaded"></i> Equipos destacados</h3>
+{{!-- Equipos destacados ────────────────────────────────── --}}
+<div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="section-title">
+        <span class="title-accent"></span>Equipos destacados
+    </h2>
+    <a asp-controller="Equipos" asp-action="Index" class="btn btn-outline-wcs btn-sm">
+        Ver todos <i class="bi bi-arrow-right ms-1"></i>
+    </a>
+</div>
+
 @if (!Model.EquiposDestacados.Any())
 {
     <div class="alert alert-info">Aún no hay equipos registrados.</div>
 }
 else
 {
-    <div class="row g-4">
+    <div class="row g-4 stagger">
         @foreach (var equipo in Model.EquiposDestacados)
         {
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-4 fade-up">
                 <partial name="_CardEquipo" model="equipo" />
             </div>
         }

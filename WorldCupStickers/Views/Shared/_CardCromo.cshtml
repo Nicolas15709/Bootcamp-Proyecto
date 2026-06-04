@@ -1,35 +1,60 @@
 @model Cromo
 
 <div class="cromo-card">
-    <div class="cromo-img-wrap">
-        <span class="cromo-numero">#@Model.NumeroCromo.ToString("D3")</span>
-        @if (Model.Album?.EdicionEspecial == true)
-        {
-            <span class="badge badge-dorado position-absolute top-0 end-0 m-2"><i class="bi bi-star-fill"></i></span>
-        }
+
+    {{!-- Photo --}}
+    <div class="cromo-photo">
         @if (!string.IsNullOrEmpty(Model.FotoUrl))
         {
             <img src="@Model.FotoUrl" alt="@Model.Jugador?.Nombre" loading="lazy" />
         }
         else
         {
-            <i class="bi bi-person-bounding-box text-white-50 display-1"></i>
+            <div class="cromo-photo-placeholder">
+                <i class="bi bi-person-bounding-box"></i>
+            </div>
         }
     </div>
-    <div class="cromo-body">
+
+    {{!-- Gradient overlay --}}
+    <div class="cromo-overlay"></div>
+
+    {{!-- Number badge --}}
+    <span class="cromo-num">#@Model.NumeroCromo.ToString("D3")</span>
+
+    {{!-- Special edition star --}}
+    @if (Model.Album?.EdicionEspecial == true)
+    {
+        <span class="cromo-special"><i class="bi bi-star-fill" style="font-size:.55rem"></i></span>
+    }
+
+    {{!-- Bottom info --}}
+    <div class="cromo-info">
         <div class="cromo-nombre">@Model.Jugador?.Nombre</div>
-        <div class="small text-muted mb-1">
-            <i class="bi bi-shield-fill"></i> @Model.Equipo?.Nombre
+        <div class="cromo-equipo-row">
+            @if (!string.IsNullOrEmpty(Model.Equipo?.LogoUrl))
+            {
+                <img src="@Model.Equipo.LogoUrl" alt="" />
+            }
+            <span>@Model.Equipo?.Nombre?.Replace("Selección ", "")</span>
         </div>
-        <div class="mb-2">
-            <span class="badge badge-azul">@Model.Equipo?.Pais?.Nombre</span>
-            <span class="badge bg-secondary">@Model.Edicion</span>
-        </div>
-        <div class="cromo-valor mb-2">@Model.ValorMercado.ToString("C")</div>
-        <div class="mt-auto d-flex gap-1">
-            <a asp-controller="Cromos" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-wcs flex-fill"><i class="bi bi-eye"></i></a>
-            <a asp-controller="Cromos" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-primary flex-fill"><i class="bi bi-pencil"></i></a>
-            <a asp-controller="Cromos" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger flex-fill"><i class="bi bi-trash"></i></a>
+        <div class="cromo-meta">
+            @if (!string.IsNullOrEmpty(Model.Jugador?.Posicion))
+            {
+                <span class="cromo-pos-badge">@Model.Jugador.Posicion[..Math.Min(3, Model.Jugador.Posicion.Length)].ToUpperInvariant()</span>
+            }
+            <span class="cromo-valor">@Model.ValorMercado.ToString("C0")</span>
         </div>
     </div>
+
+    {{!-- Shine sweep --}}
+    <div class="cromo-shine"></div>
+
+    {{!-- Action buttons (visible on hover) --}}
+    <div class="cromo-actions">
+        <a asp-controller="Cromos" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm" title="Ver"><i class="bi bi-eye"></i></a>
+        <a asp-controller="Cromos" asp-action="Edit"    asp-route-id="@Model.Id" class="btn btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
+        <a asp-controller="Cromos" asp-action="Delete"  asp-route-id="@Model.Id" class="btn btn-sm" title="Eliminar"><i class="bi bi-trash"></i></a>
+    </div>
+
 </div>

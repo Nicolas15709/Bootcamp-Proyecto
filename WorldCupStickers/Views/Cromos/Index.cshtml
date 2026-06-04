@@ -3,68 +3,75 @@
     ViewData["Title"] = "Cromos";
 }
 
-<div class="wcs-page-header">
-    <h1><i class="bi bi-card-image"></i> Catálogo de cromos</h1>
+<div class="wcs-page-header fade-up">
+    <h1>Catálogo de Cromos</h1>
     <div class="d-flex gap-2">
-        <form asp-action="ActualizarFotosBulk" method="post" id="formBulk">
+        <form asp-action="ActualizarFotosBulk" method="post">
             @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-outline-warning" id="btnBulk"
-                    onclick="return confirm('¿Actualizar fotos de todos los cromos con placeholder usando TheSportsDB?')">
-                <i class="bi bi-cloud-download"></i> Actualizar fotos (API)
+            <button type="submit" class="btn btn-outline-wcs btn-sm"
+                    onclick="return confirm('¿Actualizar fotos desde TheSportsDB?')">
+                <i class="bi bi-cloud-download me-1"></i>Sync fotos
             </button>
         </form>
-        <a asp-action="Create" class="btn btn-wcs"><i class="bi bi-plus-circle"></i> Nuevo cromo</a>
+        <a asp-action="Create" class="btn btn-wcs btn-sm">
+            <i class="bi bi-plus-circle me-1"></i>Nuevo cromo
+        </a>
     </div>
 </div>
 
-<form method="get" class="card card-body mb-4">
-    <div class="row g-2">
-        <div class="col-md-2">
-            <input type="number" name="numeroCromo" value="@Model.NumeroCromo" class="form-control" placeholder="N° cromo" />
+{{!-- Filtros ─────────────────────────────────────────────── --}}
+<form method="get" class="filter-bar fade-up mb-4">
+    <div class="row g-2 align-items-end">
+        <div class="col-6 col-md-2">
+            <input type="number" name="numeroCromo" value="@Model.NumeroCromo"
+                   class="form-control form-control-sm" placeholder="N° cromo" />
         </div>
-        <div class="col-md-3">
-            <input type="text" name="jugador" value="@Model.Jugador" class="form-control" placeholder="Jugador..." />
+        <div class="col-6 col-md-3">
+            <input type="text" name="jugador" value="@Model.Jugador"
+                   class="form-control form-control-sm" placeholder="Jugador..." />
         </div>
-        <div class="col-md-2">
-            <select name="equipoId" class="form-select" asp-items="Model.Equipos">
+        <div class="col-6 col-md-2">
+            <select name="equipoId" class="form-select form-select-sm" asp-items="Model.Equipos">
                 <option value="">Equipo</option>
             </select>
         </div>
-        <div class="col-md-2">
-            <select name="paisId" class="form-select" asp-items="Model.Paises">
+        <div class="col-6 col-md-2">
+            <select name="paisId" class="form-select form-select-sm" asp-items="Model.Paises">
                 <option value="">País</option>
             </select>
         </div>
-        <div class="col-md-2">
-            <select name="albumId" class="form-select" asp-items="Model.Albumes">
+        <div class="col-6 col-md-2">
+            <select name="albumId" class="form-select form-select-sm" asp-items="Model.Albumes">
                 <option value="">Álbum</option>
             </select>
         </div>
-        <div class="col-md-1">
-            <select name="edicion" class="form-select" asp-items="Model.Ediciones">
-                <option value="">Ed.</option>
-            </select>
+        <div class="col-12 col-md-1 d-flex gap-1">
+            <button type="submit" class="btn btn-wcs btn-sm w-100">
+                <i class="bi bi-funnel"></i>
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-x-lg"></i>
+            </a>
         </div>
-    </div>
-    <div class="mt-2 d-flex gap-2">
-        <button type="submit" class="btn btn-outline-wcs"><i class="bi bi-funnel"></i> Filtrar</button>
-        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i> Limpiar</a>
     </div>
 </form>
 
+{{!-- Grid ─────────────────────────────────────────────────── --}}
 @if (!Model.Cromos.Any())
 {
-    <div class="alert alert-info"><i class="bi bi-info-circle"></i> No se encontraron cromos con esos filtros.</div>
+    <div class="alert alert-info fade-up">
+        <i class="bi bi-info-circle me-2"></i>No se encontraron cromos con esos filtros.
+    </div>
 }
 else
 {
-    <div class="row g-4">
+    <p class="text-dim small mb-3 fade-up">@Model.Cromos.Count() cromo(s)</p>
+    <div class="cromos-grid stagger">
         @foreach (var cromo in Model.Cromos)
         {
-            <div class="col-12 col-md-6 col-lg-3">
+            <div class="fade-up">
                 <partial name="_CardCromo" model="cromo" />
             </div>
         }
     </div>
-    <p class="text-muted small mt-3">@Model.Cromos.Count() cromo(s) en el catálogo.</p>
 }
