@@ -18,6 +18,7 @@ public class TheSportsDbService : ITheSportsDbService
     public TheSportsDbService(HttpClient http, ILogger<TheSportsDbService> logger)
     {
         _http = http;
+        _logger = logger;
         _http.BaseAddress = new Uri(BaseUrl + "/");
         _http.Timeout = TimeSpan.FromSeconds(12);
         _http.DefaultRequestHeaders.Add("User-Agent", "WorldCupStickerManager/1.0");
