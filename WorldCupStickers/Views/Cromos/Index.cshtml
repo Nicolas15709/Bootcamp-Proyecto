@@ -3,13 +3,12 @@
     ViewData["Title"] = "Cromos";
 }
 
-<div class="wcs-page-header fade-up">
+<div class="wcs-page-header">
     <h1>Catálogo de Cromos</h1>
     <div class="d-flex gap-2">
         <form asp-action="ActualizarFotosBulk" method="post">
             @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-outline-wcs btn-sm"
-                    onclick="return confirm('¿Actualizar fotos desde TheSportsDB?')">
+            <button type="submit" class="btn btn-outline-wcs btn-sm">
                 <i class="bi bi-cloud-download me-1"></i>Sync fotos
             </button>
         </form>
@@ -19,8 +18,8 @@
     </div>
 </div>
 
-{{!-- Filtros ─────────────────────────────────────────────── --}}
-<form method="get" class="filter-bar fade-up mb-4">
+<!-- Filtros -->
+<form method="get" class="filter-bar mb-4">
     <div class="row g-2 align-items-end">
         <div class="col-6 col-md-2">
             <input type="number" name="numeroCromo" value="@Model.NumeroCromo"
@@ -56,22 +55,20 @@
     </div>
 </form>
 
-{{!-- Grid ─────────────────────────────────────────────────── --}}
+<!-- Grid -->
 @if (!Model.Cromos.Any())
 {
-    <div class="alert alert-info fade-up">
+    <div class="alert alert-info">
         <i class="bi bi-info-circle me-2"></i>No se encontraron cromos con esos filtros.
     </div>
 }
 else
 {
-    <p class="text-dim small mb-3 fade-up">@Model.Cromos.Count() cromo(s)</p>
-    <div class="cromos-grid stagger">
+    <p class="text-dim small mb-3">@Model.Cromos.Count() cromo(s)</p>
+    <div class="cromos-grid">
         @foreach (var cromo in Model.Cromos)
         {
-            <div class="fade-up">
-                <partial name="_CardCromo" model="cromo" />
-            </div>
+            <partial name="_CardCromo" model="cromo" />
         }
     </div>
 }

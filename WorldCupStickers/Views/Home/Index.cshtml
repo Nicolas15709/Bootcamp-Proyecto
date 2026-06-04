@@ -3,14 +3,14 @@
     ViewData["Title"] = "Dashboard";
 }
 
-{{!-- Hero ──────────────────────────────────────────────── --}}
-<div class="wcs-hero fade-up">
+<!-- Hero -->
+<div class="wcs-hero">
     <div class="row align-items-center">
         <div class="col-lg-8">
             <div class="hero-eyebrow">Gestor de Cromos Mundialistas</div>
             <h1 class="hero-title">WORLD CUP<br><span>STICKER MANAGER</span></h1>
-            <p class="hero-sub">Administra tu colección de cromos del mundial. Jugadores, equipos, álbumes y mucho más.</p>
-            <div class="d-flex gap-2 mt-3">
+            <p class="hero-sub">Administra tu colección del mundial. Jugadores, equipos, álbumes y cromos con fotos reales.</p>
+            <div class="hero-btns">
                 <a asp-controller="Cromos" asp-action="Create" class="btn btn-wcs">
                     <i class="bi bi-plus-circle me-1"></i>Nuevo cromo
                 </a>
@@ -22,37 +22,37 @@
     </div>
 </div>
 
-{{!-- Stat cards ────────────────────────────────────────── --}}
-<div class="row g-3 mb-5 stagger">
-    <div class="col-6 col-md-4 col-lg fade-up">
+<!-- Stat cards -->
+<div class="row g-3 mb-5">
+    <div class="col-6 col-md-4 col-lg">
         <a asp-controller="Paises" asp-action="Index" class="stat-card stat-azul">
             <i class="bi bi-globe-americas stat-icon"></i>
             <div class="stat-num" data-target="@Model.TotalPaises">@Model.TotalPaises</div>
             <div class="stat-label">Países</div>
         </a>
     </div>
-    <div class="col-6 col-md-4 col-lg fade-up">
+    <div class="col-6 col-md-4 col-lg">
         <a asp-controller="Equipos" asp-action="Index" class="stat-card stat-verde">
             <i class="bi bi-shield-fill stat-icon"></i>
             <div class="stat-num" data-target="@Model.TotalEquipos">@Model.TotalEquipos</div>
             <div class="stat-label">Equipos</div>
         </a>
     </div>
-    <div class="col-6 col-md-4 col-lg fade-up">
+    <div class="col-6 col-md-4 col-lg">
         <a asp-controller="Jugadores" asp-action="Index" class="stat-card stat-morado">
             <i class="bi bi-person-fill stat-icon"></i>
             <div class="stat-num" data-target="@Model.TotalJugadores">@Model.TotalJugadores</div>
             <div class="stat-label">Jugadores</div>
         </a>
     </div>
-    <div class="col-6 col-md-4 col-lg fade-up">
+    <div class="col-6 col-md-4 col-lg">
         <a asp-controller="Cromos" asp-action="Index" class="stat-card stat-rojo">
             <i class="bi bi-card-image stat-icon"></i>
             <div class="stat-num" data-target="@Model.TotalCromos">@Model.TotalCromos</div>
             <div class="stat-label">Cromos</div>
         </a>
     </div>
-    <div class="col-6 col-md-4 col-lg fade-up">
+    <div class="col-6 col-md-4 col-lg">
         <a asp-controller="Albumes" asp-action="Index" class="stat-card stat-dorado">
             <i class="bi bi-collection-fill stat-icon"></i>
             <div class="stat-num" data-target="@Model.TotalAlbumes">@Model.TotalAlbumes</div>
@@ -61,11 +61,9 @@
     </div>
 </div>
 
-{{!-- Últimos cromos ────────────────────────────────────── --}}
+<!-- Últimos cromos -->
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-title">
-        <span class="title-accent"></span>Últimos cromos
-    </h2>
+    <h2 class="section-title"><span class="title-bar"></span>Últimos cromos</h2>
     <a asp-controller="Cromos" asp-action="Index" class="btn btn-outline-wcs btn-sm">
         Ver todos <i class="bi bi-arrow-right ms-1"></i>
     </a>
@@ -77,21 +75,17 @@
 }
 else
 {
-    <div class="cromos-grid mb-5 stagger">
+    <div class="cromos-grid mb-5">
         @foreach (var cromo in Model.UltimosCromos)
         {
-            <div class="fade-up">
-                <partial name="_CardCromo" model="cromo" />
-            </div>
+            <partial name="_CardCromo" model="cromo" />
         }
     </div>
 }
 
-{{!-- Equipos destacados ────────────────────────────────── --}}
+<!-- Equipos destacados -->
 <div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-title">
-        <span class="title-accent"></span>Equipos destacados
-    </h2>
+    <h2 class="section-title"><span class="title-bar"></span>Equipos destacados</h2>
     <a asp-controller="Equipos" asp-action="Index" class="btn btn-outline-wcs btn-sm">
         Ver todos <i class="bi bi-arrow-right ms-1"></i>
     </a>
@@ -103,10 +97,10 @@ else
 }
 else
 {
-    <div class="row g-4 stagger">
+    <div class="row g-4">
         @foreach (var equipo in Model.EquiposDestacados)
         {
-            <div class="col-md-6 col-lg-4 fade-up">
+            <div class="col-md-6 col-lg-4">
                 <partial name="_CardEquipo" model="equipo" />
             </div>
         }

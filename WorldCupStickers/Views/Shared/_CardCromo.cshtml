@@ -1,8 +1,8 @@
 @model Cromo
 
-<div class="cromo-card">
+<div class="cromo-card" data-tilt>
 
-    {{!-- Photo --}}
+    <!-- Player photo -->
     <div class="cromo-photo">
         @if (!string.IsNullOrEmpty(Model.FotoUrl))
         {
@@ -16,19 +16,25 @@
         }
     </div>
 
-    {{!-- Gradient overlay --}}
+    <!-- Gradient overlay -->
     <div class="cromo-overlay"></div>
 
-    {{!-- Number badge --}}
+    <!-- Holographic foil -->
+    <div class="cromo-holo"></div>
+
+    <!-- Specular glare -->
+    <div class="cromo-glare"></div>
+
+    <!-- Number badge -->
     <span class="cromo-num">#@Model.NumeroCromo.ToString("D3")</span>
 
-    {{!-- Special edition star --}}
+    <!-- Special star -->
     @if (Model.Album?.EdicionEspecial == true)
     {
-        <span class="cromo-special"><i class="bi bi-star-fill" style="font-size:.55rem"></i></span>
+        <span class="cromo-special"><i class="bi bi-star-fill" style="font-size:.5rem"></i></span>
     }
 
-    {{!-- Bottom info --}}
+    <!-- Bottom info -->
     <div class="cromo-info">
         <div class="cromo-nombre">@Model.Jugador?.Nombre</div>
         <div class="cromo-equipo-row">
@@ -36,25 +42,27 @@
             {
                 <img src="@Model.Equipo.LogoUrl" alt="" />
             }
-            <span>@Model.Equipo?.Nombre?.Replace("Selección ", "")</span>
+            <span>@(Model.Equipo?.Nombre?.Replace("Selección ", "") ?? "")</span>
         </div>
         <div class="cromo-meta">
             @if (!string.IsNullOrEmpty(Model.Jugador?.Posicion))
             {
-                <span class="cromo-pos-badge">@Model.Jugador.Posicion[..Math.Min(3, Model.Jugador.Posicion.Length)].ToUpperInvariant()</span>
+                var pos = Model.Jugador.Posicion;
+                var abbr = pos.Length >= 3 ? pos[..3].ToUpperInvariant() : pos.ToUpperInvariant();
+                <span class="cromo-pos-badge">@abbr</span>
             }
             <span class="cromo-valor">@Model.ValorMercado.ToString("C0")</span>
         </div>
     </div>
 
-    {{!-- Shine sweep --}}
-    <div class="cromo-shine"></div>
-
-    {{!-- Action buttons (visible on hover) --}}
+    <!-- Action buttons (appear on hover) -->
     <div class="cromo-actions">
-        <a asp-controller="Cromos" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm" title="Ver"><i class="bi bi-eye"></i></a>
-        <a asp-controller="Cromos" asp-action="Edit"    asp-route-id="@Model.Id" class="btn btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
-        <a asp-controller="Cromos" asp-action="Delete"  asp-route-id="@Model.Id" class="btn btn-sm" title="Eliminar"><i class="bi bi-trash"></i></a>
+        <a asp-controller="Cromos" asp-action="Details" asp-route-id="@Model.Id"
+           class="btn btn-sm" title="Ver detalle"><i class="bi bi-eye"></i></a>
+        <a asp-controller="Cromos" asp-action="Edit"    asp-route-id="@Model.Id"
+           class="btn btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
+        <a asp-controller="Cromos" asp-action="Delete"  asp-route-id="@Model.Id"
+           class="btn btn-sm" title="Eliminar"><i class="bi bi-trash"></i></a>
     </div>
 
 </div>
