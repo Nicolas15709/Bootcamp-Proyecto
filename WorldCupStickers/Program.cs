@@ -39,11 +39,12 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// Aplicar migraciones y sembrar datos iniciales al arrancar
+// Aplicar migraciones, sembrar datos iniciales y expandir jugadores al arrancar
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await DbInitializer.InitializeAsync(context);
+    await DbInitializer.ExpandirJugadoresAsync(context);
 }
 
 app.Run();

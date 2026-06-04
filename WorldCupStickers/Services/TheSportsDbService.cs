@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 
 namespace WorldCupStickers.Services;
@@ -11,14 +13,13 @@ public class TheSportsDbService : ITheSportsDbService
     private readonly HttpClient _http;
     private readonly ILogger<TheSportsDbService> _logger;
 
-    // URL base de la API pública (clave 3 = acceso gratuito)
     private const string BaseUrl = "https://www.thesportsdb.com/api/v1/json/3";
 
     public TheSportsDbService(HttpClient http, ILogger<TheSportsDbService> logger)
     {
         _http = http;
         _http.BaseAddress = new Uri(BaseUrl + "/");
-        _http.Timeout = TimeSpan.FromSeconds(10);
+        _http.Timeout = TimeSpan.FromSeconds(12);
         _http.DefaultRequestHeaders.Add("User-Agent", "WorldCupStickerManager/1.0");
     }
 
@@ -26,41 +27,15 @@ public class TheSportsDbService : ITheSportsDbService
     {
         if (string.IsNullOrWhiteSpace(nombre)) return null;
 
-        try
+        // Genera variantes del nombre para maximizar la tasa de aciertos
+        var variantes = GenerarVariantes(nombre.Trim());
+
+        foreach (var variante in variantes)
         {
-            // Endpoint: /searchplayers.php?p={nombre}
-            var url = $"searchplayers.php?p={Uri.EscapeDataString(nombre.Trim())}";
-            using var response = await _http.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode) return null;
-
-            var json = await response.Content.ReadAsStringAsync();
-            using var doc = JsonDocument.Parse(json);
-
-            // La API devuelve: { "player": [ {...}, ... ] }
-            // Si no hay resultados devuelve: { "player": null }
-            if (!doc.RootElement.TryGetProperty("player", out var arr)
-                || arr.ValueKind != JsonValueKind.Array
-                || arr.GetArrayLength() == 0)
-                return null;
-
-            // Tomar el primer resultado
-            var p = arr[0];
-
-            return new TheSportsDbJugador
-            {
-                Nombre      = GetStr(p, "strPlayer") ?? nombre,
-                FotoUrl     = GetStr(p, "strThumb"),
-                Equipo      = GetStr(p, "strTeam"),
-                Posicion    = GetStr(p, "strPosition"),
-                Nacionalidad = GetStr(p, "strNationality")
-            };
+            var resultado = await BuscarExactoAsync(variante);
+            if (resultado != null) return resultado;
         }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "TheSportsDB: error buscando jugador '{Nombre}'", nombre);
-            return null;
-        }
+        return null;
     }
 
     public async Task<string?> BuscarFotoAsync(string nombre)
@@ -69,7 +44,93 @@ public class TheSportsDbService : ITheSportsDbService
         return jugador?.FotoUrl;
     }
 
-    // Helper para leer strings de JsonElement sin lanzar excepción
+    // ──────────────────────────────────────────────────────────────
+    // Privados
+    // ──────────────────────────────────────────────────────────────
+
+    private async Task<TheSportsDbJugador?> BuscarExactoAsync(string nombre)
+    {
+        try
+        {
+            var url = $"searchplayers.php?p={Uri.EscapeDataString(nombre)}";
+            using var response = await _http.GetAsync(url);
+            if (!response.IsSuccessStatusCode) return null;
+
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("player", out var arr)
+                || arr.ValueKind != JsonValueKind.Array
+                || arr.GetArrayLength() == 0)
+                return null;
+
+            var p = arr[0];
+            return new TheSportsDbJugador
+            {
+                Nombre       = GetStr(p, "strPlayer") ?? nombre,
+                FotoUrl      = GetStr(p, "strThumb"),
+                Equipo       = GetStr(p, "strTeam"),
+                Posicion     = GetStr(p, "strPosition"),
+                Nacionalidad = GetStr(p, "strNationality")
+            };
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "TheSportsDB: error buscando '{Nombre}'", nombre);
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Genera hasta 4 variantes del nombre para buscar:
+    /// 1. Nombre original
+    /// 2. Sin diacríticos (tildes, diéresis, ñ…)
+    /// 3. Solo el apellido (última palabra)
+    /// 4. Solo el primer nombre
+    /// </summary>
+    private static IEnumerable<string> GenerarVariantes(string nombre)
+    {
+        var vistos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        void Yield(string v)
+        {
+            if (!string.IsNullOrWhiteSpace(v) && vistos.Add(v))
+                vistos.Add(v); // se usa para iterar al final
+        }
+
+        Yield(nombre);
+        Yield(QuitarDiacriticos(nombre));
+
+        var partes = nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        if (partes.Length > 1)
+        {
+            Yield(partes[^1]);                        // solo apellido
+            Yield(QuitarDiacriticos(partes[^1]));
+            Yield(partes[0]);                         // solo primer nombre
+            Yield(QuitarDiacriticos(partes[0]));
+            // Apellido + primer nombre (orden anglosajón)
+            if (partes.Length >= 2)
+                Yield(partes[^1] + " " + partes[0]);
+        }
+
+        return vistos;
+    }
+
+    /// <summary>
+    /// Convierte "Müller" → "Muller", "Félix" → "Felix", "Rüdiger" → "Rudiger", etc.
+    /// </summary>
+    private static string QuitarDiacriticos(string texto)
+    {
+        var normalizado = texto.Normalize(NormalizationForm.FormD);
+        var sb = new StringBuilder(normalizado.Length);
+        foreach (var c in normalizado)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                sb.Append(c);
+        }
+        return sb.ToString().Normalize(NormalizationForm.FormC);
+    }
+
     private static string? GetStr(JsonElement el, string prop)
     {
         if (el.TryGetProperty(prop, out var v) && v.ValueKind == JsonValueKind.String)

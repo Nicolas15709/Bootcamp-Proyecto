@@ -125,4 +125,131 @@ public static class DbInitializer
         );
         await context.SaveChangesAsync();
     }
+
+    // ─────────────────────────────────────────────────────────────────
+    // EXPANSIÓN: agrega más jugadores y cromos sin tocar los existentes
+    // ─────────────────────────────────────────────────────────────────
+    public static async Task ExpandirJugadoresAsync(ApplicationDbContext context)
+    {
+        // Equipos existentes indexados por fragmento de nombre
+        var equipos = await context.Equipos.ToListAsync();
+        int E(string frag) => equipos.First(e => e.Nombre.Contains(frag)).Id;
+
+        // Álbum existente
+        var albumId = (await context.Albumes.FirstAsync()).Id;
+
+        // Nombres ya existentes (para no duplicar)
+        var existentes = new HashSet<string>(
+            await context.Jugadores.Select(j => j.Nombre).ToListAsync(),
+            StringComparer.OrdinalIgnoreCase);
+
+        // Helper: solo agrega si no existe
+        var nuevos = new List<Jugador>();
+        void Add(string nombre, string posicion, int num, DateTime nac, string equipo)
+        {
+            if (!existentes.Contains(nombre))
+                nuevos.Add(new() { Nombre = nombre, Posicion = posicion, NumeroCamiseta = num, FechaNacimiento = nac, EquipoId = E(equipo) });
+        }
+
+        // ── ARGENTINA ──────────────────────────────────────────
+        Add("Ángel Di María",       "Extremo",       11, new(1988,  2, 14), "Argentina");
+        Add("Alexis Mac Allister",  "Mediocampista",  7, new(1998, 12, 24), "Argentina");
+        Add("Rodrigo De Paul",      "Mediocampista",  7, new(1994,  5, 24), "Argentina");
+        Add("Nicolás Otamendi",     "Defensa",       30, new(1988,  2, 12), "Argentina");
+        Add("Lisandro Martínez",    "Defensa",        2, new(1998,  1, 18), "Argentina");
+        Add("Enzo Fernández",       "Mediocampista", 24, new(2001,  1, 17), "Argentina");
+        Add("Nicolás Tagliafico",   "Defensa",        3, new(1992,  8, 31), "Argentina");
+
+        // ── BRASIL ─────────────────────────────────────────────
+        Add("Alisson Becker",       "Portero",        1, new(1992, 10,  2), "Brasil");
+        Add("Marquinhos",           "Defensa",        4, new(1994,  5, 14), "Brasil");
+        Add("Éder Militão",         "Defensa",        3, new(1998,  1, 18), "Brasil");
+        Add("Lucas Paquetá",        "Mediocampista", 10, new(1997,  8, 27), "Brasil");
+        Add("Raphinha",             "Extremo",        26, new(1996, 12, 14), "Brasil");
+        Add("Gabriel Martinelli",   "Extremo",        11, new(2001,  6, 18), "Brasil");
+        Add("Gabriel Jesus",        "Delantero",       9, new(1997,  4,  3), "Brasil");
+
+        // ── FRANCIA ────────────────────────────────────────────
+        Add("Hugo Lloris",          "Portero",         1, new(1986,  12, 26), "Francia");
+        Add("Raphaël Varane",       "Defensa",         4, new(1993,  4, 25), "Francia");
+        Add("Dayot Upamecano",      "Defensa",         5, new(1998, 10, 27), "Francia");
+        Add("Adrien Rabiot",        "Mediocampista",  14, new(1995,  4,  3), "Francia");
+        Add("Ousmane Dembélé",      "Extremo",        11, new(1997,  5, 15), "Francia");
+        Add("Marcus Thuram",        "Delantero",        9, new(1997,  8,  6), "Francia");
+        Add("Kingsley Coman",       "Extremo",        10, new(1996,  6, 13), "Francia");
+
+        // ── ESPAÑA ─────────────────────────────────────────────
+        Add("Unai Simón",           "Portero",         1, new(1997,  6,  11), "España");
+        Add("Dani Carvajal",        "Defensa",         2, new(1992,  1, 11), "España");
+        Add("Aymeric Laporte",      "Defensa",        14, new(1994,  5, 27), "España");
+        Add("Fabián Ruiz",          "Mediocampista",  26, new(1996,  4,  3), "España");
+        Add("Dani Olmo",            "Mediocampista",  10, new(1998,  5,  7), "España");
+        Add("Ferran Torres",        "Extremo",        11, new(2000, 2, 29), "España");
+        Add("Álvaro Morata",        "Delantero",        7, new(1992,  10, 23), "España");
+
+        // ── INGLATERRA ─────────────────────────────────────────
+        Add("Jordan Pickford",      "Portero",         1, new(1994,  3,  7), "Inglaterra");
+        Add("Kyle Walker",          "Defensa",         2, new(1990,  5, 28), "Inglaterra");
+        Add("John Stones",          "Defensa",         5, new(1994,  5, 28), "Inglaterra");
+        Add("Declan Rice",          "Mediocampista",   4, new(1999,  1, 14), "Inglaterra");
+        Add("Bukayo Saka",          "Extremo",         7, new(2001,  9,  5), "Inglaterra");
+        Add("Phil Foden",           "Mediocampista",  47, new(2000,  5, 28), "Inglaterra");
+        Add("Marcus Rashford",      "Extremo",        10, new(1997, 10, 31), "Inglaterra");
+
+        // ── PORTUGAL ───────────────────────────────────────────
+        Add("Rui Patrício",         "Portero",         1, new(1988,  2, 15), "Portugal");
+        Add("Rúben Dias",           "Defensa",         3, new(1997,  5, 14), "Portugal");
+        Add("João Cancelo",         "Defensa",         5, new(1994,  5, 27), "Portugal");
+        Add("Bernardo Silva",       "Mediocampista",  10, new(1994,  8, 10), "Portugal");
+        Add("João Félix",           "Delantero",       7, new(1999, 11, 10), "Portugal");
+        Add("Gonçalo Ramos",        "Delantero",       9, new(2001,  6, 20), "Portugal");
+        Add("Pepe",                 "Defensa",         3, new(1983,  2, 26), "Portugal");
+
+        // ── ALEMANIA ───────────────────────────────────────────
+        Add("Manuel Neuer",         "Portero",         1, new(1986,  3, 27), "Alemania");
+        Add("Antonio Rüdiger",      "Defensa",         2, new(1993,  3,  3), "Alemania");
+        Add("Joshua Kimmich",       "Mediocampista",   6, new(1995,  2,  8), "Alemania");
+        Add("Leroy Sané",           "Extremo",        10, new(1996,  1, 11), "Alemania");
+        Add("Thomas Müller",        "Mediocampista",  25, new(1989,  9, 13), "Alemania");
+        Add("Kai Havertz",          "Delantero",        7, new(1999,  6, 11), "Alemania");
+        Add("Serge Gnabry",         "Extremo",        22, new(1995,  7, 14), "Alemania");
+
+        // ── PAÍSES BAJOS ───────────────────────────────────────
+        Add("Jasper Cillessen",     "Portero",         1, new(1989,  4, 22), "Países Bajos");
+        Add("Matthijs de Ligt",     "Defensa",         3, new(1999,  8, 12), "Países Bajos");
+        Add("Nathan Aké",           "Defensa",         6, new(1995,  2, 18), "Países Bajos");
+        Add("Frenkie de Jong",      "Mediocampista",   8, new(1997,  5, 12), "Países Bajos");
+        Add("Xavi Simons",          "Mediocampista",  26, new(2003,  4, 21), "Países Bajos");
+        Add("Cody Gakpo",           "Extremo",        11, new(1999,  5,  7), "Países Bajos");
+        Add("Memphis Depay",        "Delantero",       10, new(1994,  2, 13), "Países Bajos");
+
+        if (!nuevos.Any()) return; // nada que agregar
+
+        context.Jugadores.AddRange(nuevos);
+        await context.SaveChangesAsync();
+
+        // Número de cromo siguiente al último existente
+        int siguienteNum = (await context.Cromos.MaxAsync(c => (int?)c.NumeroCromo) ?? 0) + 1;
+
+        string Placeholder(string nombre) =>
+            $"https://placehold.co/300x400/0B1F3A/D4AF37/png?text={Uri.EscapeDataString(nombre)}";
+
+        var valoresBase = new decimal[]
+        { 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140 };
+        int idx = 0;
+
+        var cromos = nuevos.Select(j => new Cromo
+        {
+            NumeroCromo  = siguienteNum++,
+            Edicion      = "Qatar 2022",
+            ValorMercado = valoresBase[idx++ % valoresBase.Length],
+            FotoUrl      = Placeholder(j.Nombre),
+            JugadorId    = j.Id,
+            EquipoId     = j.EquipoId,
+            AlbumId      = albumId
+        }).ToList();
+
+        context.Cromos.AddRange(cromos);
+        await context.SaveChangesAsync();
+    }
 }

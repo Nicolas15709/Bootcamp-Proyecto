@@ -267,6 +267,9 @@ public class CromosController : Controller
             {
                 noEncontrados++;
             }
+
+            // Pequeña pausa para no saturar la API gratuita
+            await Task.Delay(350);
         }
 
         await _context.SaveChangesAsync();
