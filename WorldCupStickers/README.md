@@ -198,8 +198,8 @@ En la carpeta `docs/` encontrarás el documento de entrega en PDF (objetivo, tec
 ## 👥 Integrantes
 
 - Nicolás López Cadena
-- _(completar)_
+- Melissa Torres
 
 ## 🔗 Repositorio
 
-- _(completar con el link de GitHub)_
+- https://github.com/Nicolas15709/Bootcamp-Proyecto.git
