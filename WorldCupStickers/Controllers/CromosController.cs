@@ -12,11 +12,13 @@ public class CromosController : Controller
 {
     private readonly ApplicationDbContext _context;
     private readonly IFileUploadService _fileUpload;
+    private readonly ITheSportsDbService _sportsDb;
 
-    public CromosController(ApplicationDbContext context, IFileUploadService fileUpload)
+    public CromosController(ApplicationDbContext context, IFileUploadService fileUpload, ITheSportsDbService sportsDb)
     {
         _context = context;
         _fileUpload = fileUpload;
+        _sportsDb = sportsDb;
     }
 
     // GET: Cromos
@@ -195,6 +197,82 @@ public class CromosController : Controller
         _context.Cromos.Remove(cromo);
         await _context.SaveChangesAsync();
         TempData["Success"] = $"Cromo #{cromo.NumeroCromo} eliminado correctamente.";
+        return RedirectToAction(nameof(Index));
+    }
+
+    // ──────────────────────────────────────────────
+    // INTEGRACIÓN THESPORTSDB
+    // ──────────────────────────────────────────────
+
+    /// <summary>
+    /// GET /Cromos/BuscarFotoApi?nombre=Messi
+    /// Devuelve JSON con la foto y datos del jugador encontrado en TheSportsDB.
+    /// Usado por el botón "Buscar foto en API" en los formularios.
+    /// </summary>
+    [HttpGet]
+    public async Task<IActionResult> BuscarFotoApi(string nombre)
+    {
+        if (string.IsNullOrWhiteSpace(nombre))
+            return Json(new { ok = false, mensaje = "Nombre vacío." });
+
+        var jugador = await _sportsDb.BuscarJugadorAsync(nombre);
+
+        if (jugador == null || string.IsNullOrEmpty(jugador.FotoUrl))
+            return Json(new { ok = false, mensaje = $"No se encontró foto para '{nombre}' en TheSportsDB." });
+
+        return Json(new
+        {
+            ok = true,
+            fotoUrl = jugador.FotoUrl,
+            nombre = jugador.Nombre,
+            equipo = jugador.Equipo,
+            posicion = jugador.Posicion
+        });
+    }
+
+    /// <summary>
+    /// POST /Cromos/ActualizarFotosBulk
+    /// Actualiza las fotos de todos los cromos que aún tienen una URL de placeholder
+    /// consultando TheSportsDB por el nombre del jugador asociado.
+    /// </summary>
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ActualizarFotosBulk()
+    {
+        var cromos = await _context.Cromos
+            .Include(c => c.Jugador)
+            .Where(c => c.FotoUrl == null || c.FotoUrl.Contains("placehold.co"))
+            .ToListAsync();
+
+        if (!cromos.Any())
+        {
+            TempData["Success"] = "Todos los cromos ya tienen foto real. No hay nada que actualizar.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        int actualizados = 0;
+        int noEncontrados = 0;
+
+        foreach (var cromo in cromos)
+        {
+            if (cromo.Jugador == null) continue;
+
+            var foto = await _sportsDb.BuscarFotoAsync(cromo.Jugador.Nombre);
+            if (!string.IsNullOrEmpty(foto))
+            {
+                cromo.FotoUrl = foto;
+                actualizados++;
+            }
+            else
+            {
+                noEncontrados++;
+            }
+        }
+
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = $"Fotos actualizadas: {actualizados}. " +
+                              (noEncontrados > 0 ? $"No encontrados en API: {noEncontrados}." : "");
         return RedirectToAction(nameof(Index));
     }
 

@@ -14,6 +14,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Servicio de subida de imágenes
 builder.Services.AddScoped<IFileUploadService, FileUploadService>();
 
+// Servicio TheSportsDB (HttpClient tipado)
+builder.Services.AddHttpClient<ITheSportsDbService, TheSportsDbService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

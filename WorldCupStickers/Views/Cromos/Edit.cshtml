@@ -34,7 +34,7 @@
                 </div>
                 <div class="col-md-4">
                     <label asp-for="JugadorId" class="form-label"></label>
-                    <select asp-for="JugadorId" class="form-select" asp-items="ViewBag.Jugadores">
+                    <select asp-for="JugadorId" id="selectJugador" class="form-select" asp-items="ViewBag.Jugadores">
                         <option value="">-- Jugador --</option>
                     </select>
                     <span asp-validation-for="JugadorId" class="text-danger"></span>
@@ -53,22 +53,29 @@
                     </select>
                     <span asp-validation-for="AlbumId" class="text-danger"></span>
                 </div>
+
+                {{!-- FotoUrl + botón API --}}
                 <div class="col-md-8">
                     <label asp-for="FotoUrl" class="form-label"></label>
-                    <input asp-for="FotoUrl" class="form-control" placeholder="https://..." />
+                    <div class="input-group">
+                        <input asp-for="FotoUrl" id="inputFotoUrl" class="form-control" placeholder="https://..." />
+                        <button type="button" id="btnBuscarApi" class="btn btn-outline-warning" title="Buscar foto en TheSportsDB">
+                            <i class="bi bi-search"></i> Buscar foto (API)
+                        </button>
+                    </div>
                     <span asp-validation-for="FotoUrl" class="text-danger"></span>
+                    <div id="apiMsg" class="form-text"></div>
                 </div>
                 <div class="col-md-4">
                     <label for="fotoFile" class="form-label">Reemplazar foto (opcional)</label>
                     <input type="file" name="fotoFile" id="fotoFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
                 </div>
-                @if (!string.IsNullOrEmpty(Model.FotoUrl))
-                {
-                    <div class="col-12">
-                        <span class="text-muted small">Foto actual:</span><br />
-                        <img src="@Model.FotoUrl" style="max-height:120px;border-radius:.5rem;border:2px solid var(--wcs-dorado);" class="mt-1" alt="Foto actual" />
-                    </div>
-                }
+
+                {{!-- Preview foto --}}
+                <div class="col-12" id="fotoPreviewBox" style="@(string.IsNullOrEmpty(Model.FotoUrl) ? "display:none" : "")">
+                    <span class="text-muted small">Vista previa:</span><br />
+                    <img id="fotoPreview" src="@Model.FotoUrl" style="max-height:140px;border-radius:.5rem;border:2px solid var(--wcs-dorado);margin-top:4px;" alt="Preview" />
+                </div>
             </div>
             <div class="mt-4">
                 <button type="submit" class="btn btn-wcs"><i class="bi bi-save"></i> Guardar cambios</button>
@@ -80,4 +87,60 @@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+    (() => {
+        const selectJugador = document.getElementById('selectJugador');
+        const inputFotoUrl  = document.getElementById('inputFotoUrl');
+        const btnBuscar     = document.getElementById('btnBuscarApi');
+        const apiMsg        = document.getElementById('apiMsg');
+        const previewBox    = document.getElementById('fotoPreviewBox');
+        const previewImg    = document.getElementById('fotoPreview');
+
+        function mostrarPreview(url) {
+            if (url) {
+                previewImg.src = url;
+                previewBox.style.display = 'block';
+            } else {
+                previewBox.style.display = 'none';
+            }
+        }
+
+        async function buscarFoto(nombre) {
+            if (!nombre) return;
+            btnBuscar.disabled = true;
+            apiMsg.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split"></i> Buscando en TheSportsDB...</span>';
+            try {
+                const r = await fetch(`/Cromos/BuscarFotoApi?nombre=${encodeURIComponent(nombre)}`);
+                const data = await r.json();
+                if (data.ok) {
+                    inputFotoUrl.value = data.fotoUrl;
+                    mostrarPreview(data.fotoUrl);
+                    apiMsg.innerHTML = `<span class="text-success"><i class="bi bi-check-circle"></i> Foto encontrada para <b>${data.nombre}</b> (${data.equipo ?? ''}).</span>`;
+                } else {
+                    apiMsg.innerHTML = `<span class="text-warning"><i class="bi bi-exclamation-circle"></i> ${data.mensaje}</span>`;
+                }
+            } catch {
+                apiMsg.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Error al conectar con la API.</span>';
+            } finally {
+                btnBuscar.disabled = false;
+            }
+        }
+
+        btnBuscar.addEventListener('click', () => {
+            const nombre = selectJugador.options[selectJugador.selectedIndex]?.text ?? '';
+            if (!nombre || nombre.startsWith('--')) {
+                apiMsg.innerHTML = '<span class="text-warning">Selecciona un jugador primero.</span>';
+                return;
+            }
+            buscarFoto(nombre);
+        });
+
+        selectJugador.addEventListener('change', () => {
+            const nombre = selectJugador.options[selectJugador.selectedIndex]?.text ?? '';
+            if (nombre && !nombre.startsWith('--')) buscarFoto(nombre);
+        });
+
+        inputFotoUrl.addEventListener('input', () => mostrarPreview(inputFotoUrl.value));
+    })();
+    </script>
 }
