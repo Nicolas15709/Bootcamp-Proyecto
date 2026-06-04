@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WorldCupStickers.Models;
+using WorldCupStickers.Services;
 
 namespace WorldCupStickers.Data;
 
@@ -129,7 +130,7 @@ public static class DbInitializer
     // ─────────────────────────────────────────────────────────────────
     // EXPANSIÓN: agrega más jugadores y cromos sin tocar los existentes
     // ─────────────────────────────────────────────────────────────────
-    public static async Task ExpandirJugadoresAsync(ApplicationDbContext context)
+    public static async Task ExpandirJugadoresAsync(ApplicationDbContext context, ITheSportsDbService? sportsDb = null)
     {
         // Equipos existentes indexados por fragmento de nombre
         var equipos = await context.Equipos.ToListAsync();
@@ -238,16 +239,29 @@ public static class DbInitializer
         { 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140 };
         int idx = 0;
 
-        var cromos = nuevos.Select(j => new Cromo
+        // Crear cromos — si hay servicio de API, buscar foto real directamente
+        var cromos = new List<Cromo>();
+        foreach (var j in nuevos)
         {
-            NumeroCromo  = siguienteNum++,
-            Edicion      = "Qatar 2022",
-            ValorMercado = valoresBase[idx++ % valoresBase.Length],
-            FotoUrl      = Placeholder(j.Nombre),
-            JugadorId    = j.Id,
-            EquipoId     = j.EquipoId,
-            AlbumId      = albumId
-        }).ToList();
+            string? fotoUrl = null;
+
+            if (sportsDb != null)
+            {
+                fotoUrl = await sportsDb.BuscarFotoAsync(j.Nombre);
+                await Task.Delay(350); // respetar rate-limit de la API gratuita
+            }
+
+            cromos.Add(new Cromo
+            {
+                NumeroCromo  = siguienteNum++,
+                Edicion      = "Qatar 2022",
+                ValorMercado = valoresBase[idx++ % valoresBase.Length],
+                FotoUrl      = fotoUrl ?? Placeholder(j.Nombre),
+                JugadorId    = j.Id,
+                EquipoId     = j.EquipoId,
+                AlbumId      = albumId
+            });
+        }
 
         context.Cromos.AddRange(cromos);
         await context.SaveChangesAsync();

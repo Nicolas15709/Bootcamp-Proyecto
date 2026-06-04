@@ -42,9 +42,10 @@ app.MapControllerRoute(
 // Aplicar migraciones, sembrar datos iniciales y expandir jugadores al arrancar
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var context  = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    var sportsDb = scope.ServiceProvider.GetRequiredService<ITheSportsDbService>();
     await DbInitializer.InitializeAsync(context);
-    await DbInitializer.ExpandirJugadoresAsync(context);
+    await DbInitializer.ExpandirJugadoresAsync(context, sportsDb);
 }
 
 app.Run();
