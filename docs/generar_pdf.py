@@ -83,7 +83,7 @@ story.append(Spacer(1, 2.2*cm))
 
 meta_tbl = Table([
     ["Integrantes", "Nicolás López Cadena"],
-    ["", "(completar)"],
+    ["", "Melissa Torres"],
     ["Tecnología", "ASP.NET Core MVC (.NET 10) + EF Core 10"],
     ["Base de datos", "SQL Server Express"],
     ["Fecha", "Junio 2026"],
@@ -324,11 +324,11 @@ hr()
 story.append(Paragraph("Integrantes", styles["H2"]))
 bullets([
     "Nicol&aacute;s L&oacute;pez Cadena",
-    "<i>(completar con el resto de integrantes)</i>",
+    "Melissa Torres",
 ])
 story.append(Paragraph("Repositorio", styles["H2"]))
 story.append(Paragraph(
-    "<i>(completar con el enlace de GitHub del proyecto)</i>", styles["Body"]))
+    "<a href='https://github.com/Nicolas15709/Bootcamp-Proyecto'>https://github.com/Nicolas15709/Bootcamp-Proyecto</a>", styles["Body"]))
 story.append(Spacer(1, 16))
 story.append(HRFlowable(width="100%", thickness=1, color=DORADO))
 story.append(Spacer(1, 6))
