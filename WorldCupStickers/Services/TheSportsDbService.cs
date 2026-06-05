@@ -96,7 +96,7 @@ public class TheSportsDbService : ITheSportsDbService
         void Yield(string v)
         {
             if (!string.IsNullOrWhiteSpace(v) && vistos.Add(v))
-                vistos.Add(v); // se usa para iterar al final
+                vistos.Add(v); 
         }
 
         Yield(nombre);
@@ -105,11 +105,10 @@ public class TheSportsDbService : ITheSportsDbService
         var partes = nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (partes.Length > 1)
         {
-            Yield(partes[^1]);                        // solo apellido
+            Yield(partes[^1]);
             Yield(QuitarDiacriticos(partes[^1]));
-            Yield(partes[0]);                         // solo primer nombre
+            Yield(partes[0]);
             Yield(QuitarDiacriticos(partes[0]));
-            // Apellido + primer nombre (orden anglosajón)
             if (partes.Length >= 2)
                 Yield(partes[^1] + " " + partes[0]);
         }
