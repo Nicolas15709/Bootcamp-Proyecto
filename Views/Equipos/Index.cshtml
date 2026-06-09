@@ -1,0 +1,40 @@
+@model IEnumerable<Equipo>
+@{
+    ViewData["Title"] = "Equipos";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-shield-fill"></i> Equipos</h1>
+    <a asp-action="Create" class="btn btn-wcs"><i class="bi bi-plus-circle"></i> Nuevo equipo</a>
+</div>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input type="text" name="search" value="@ViewBag.Search" class="form-control" placeholder="Buscar por nombre o D.T...." />
+    </div>
+    <div class="col-md-4">
+        <select name="paisId" class="form-select" asp-items="ViewBag.Paises">
+            <option value="">Todos los países</option>
+        </select>
+    </div>
+    <div class="col-md-3 d-grid d-md-flex gap-2">
+        <button type="submit" class="btn btn-outline-wcs"><i class="bi bi-search"></i> Filtrar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i> Limpiar</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info"><i class="bi bi-info-circle"></i> No se encontraron equipos.</div>
+}
+else
+{
+    <div class="row g-4">
+        @foreach (var equipo in Model)
+        {
+            <div class="col-md-6 col-lg-4">
+                <partial name="_CardEquipo" model="equipo" />
+            </div>
+        }
+    </div>
+}

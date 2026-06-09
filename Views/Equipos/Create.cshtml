@@ -1,0 +1,64 @@
+@model Equipo
+@{
+    ViewData["Title"] = "Nuevo equipo";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-plus-circle"></i> Nuevo equipo</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Nombre" class="form-label"></label>
+                    <input asp-for="Nombre" class="form-control" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="PaisId" class="form-label"></label>
+                    <select asp-for="PaisId" class="form-select" asp-items="ViewBag.Paises">
+                        <option value="">-- Seleccione un país --</option>
+                    </select>
+                    <span asp-validation-for="PaisId" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="DirectorTecnico" class="form-label"></label>
+                    <input asp-for="DirectorTecnico" class="form-control" />
+                    <span asp-validation-for="DirectorTecnico" class="text-danger"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="AnioFundacion" class="form-label"></label>
+                    <input asp-for="AnioFundacion" class="form-control" />
+                    <span asp-validation-for="AnioFundacion" class="text-danger"></span>
+                </div>
+                <div class="col-md-3">
+                    <label asp-for="GrupoMundialista" class="form-label"></label>
+                    <input asp-for="GrupoMundialista" class="form-control text-uppercase" maxlength="2" />
+                    <span asp-validation-for="GrupoMundialista" class="text-danger"></span>
+                </div>
+                <div class="col-md-8">
+                    <label asp-for="LogoUrl" class="form-label"></label>
+                    <input asp-for="LogoUrl" class="form-control" placeholder="https://... (o sube un archivo)" />
+                    <span asp-validation-for="LogoUrl" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label for="logoFile" class="form-label">Subir logo (opcional)</label>
+                    <input type="file" name="logoFile" id="logoFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                    <span class="text-danger field-validation-valid" data-valmsg-for="logoFile"></span>
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-wcs"><i class="bi bi-save"></i> Guardar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

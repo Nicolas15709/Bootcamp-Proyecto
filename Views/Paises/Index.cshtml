@@ -1,0 +1,72 @@
+@model IEnumerable<Pais>
+@{
+    ViewData["Title"] = "Países";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-globe-americas"></i> Países mundialistas</h1>
+    <a asp-action="Create" class="btn btn-wcs">
+        <i class="bi bi-plus-circle"></i> Nuevo país
+    </a>
+</div>
+
+<form method="get" class="row g-2 mb-4">
+    <div class="col-md-5">
+        <input type="text" name="search" value="@ViewBag.Search" class="form-control"
+               placeholder="Buscar por nombre o código FIFA..." />
+    </div>
+    <div class="col-md-4">
+        <select name="continente" class="form-select">
+            <option value="">Todos los continentes</option>
+            @foreach (var c in (List<string>)ViewBag.Continentes)
+            {
+                <option value="@c" selected="@(c == (string?)ViewBag.Continente)">@c</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3 d-grid d-md-flex gap-2">
+        <button type="submit" class="btn btn-outline-wcs"><i class="bi bi-search"></i> Filtrar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i> Limpiar</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info"><i class="bi bi-info-circle"></i> No se encontraron países.</div>
+}
+else
+{
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th>Ranking</th>
+                        <th>Nombre</th>
+                        <th>Continente</th>
+                        <th>Código FIFA</th>
+                        <th class="text-center">Equipos</th>
+                        <th class="text-end">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pais in Model)
+                    {
+                        <tr>
+                            <td><span class="badge badge-dorado">#@pais.RankingFifa</span></td>
+                            <td class="fw-semibold">@pais.Nombre</td>
+                            <td>@pais.Continente</td>
+                            <td><span class="badge badge-azul">@pais.CodigoFifa</span></td>
+                            <td class="text-center">@pais.Equipos.Count</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@pais.Id" class="btn btn-sm btn-outline-wcs"><i class="bi bi-eye"></i></a>
+                                <a asp-action="Edit" asp-route-id="@pais.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                <a asp-action="Delete" asp-route-id="@pais.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

@@ -1,0 +1,82 @@
+@model Album
+@{
+    ViewData["Title"] = $"Álbum - {Model.Nombre}";
+    var registrados = Model.Cromos.Count;
+    var total = Model.CantidadCromos > 0 ? Model.CantidadCromos : 1;
+    var progreso = Math.Round((double)registrados / total * 100, 1);
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-collection-fill"></i> @Model.Nombre</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-info-circle"></i> Datos generales</div>
+            <div class="card-body">
+                <dl class="row mb-3">
+                    <dt class="col-6">Año</dt><dd class="col-6">@Model.Anio</dd>
+                    <dt class="col-6">Meta de cromos</dt><dd class="col-6">@Model.CantidadCromos</dd>
+                    <dt class="col-6">Edición especial</dt>
+                    <dd class="col-6">
+                        @if (Model.EdicionEspecial)
+                        {
+                            <span class="badge badge-dorado"><i class="bi bi-star-fill"></i> Sí</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">No</span>
+                        }
+                    </dd>
+                </dl>
+                <hr />
+                <p class="mb-1">Cromos registrados: <strong>@registrados / @Model.CantidadCromos</strong></p>
+                <div class="progress mb-1" style="height: 24px;">
+                    <div class="progress-bar bg-warning text-dark fw-bold" role="progressbar"
+                         style="width: @progreso%;" aria-valuenow="@progreso" aria-valuemin="0" aria-valuemax="100">
+                        @progreso%
+                    </div>
+                </div>
+                <small class="text-muted">Progreso de completado del álbum</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-card-image"></i> Cromos del álbum (@registrados)</div>
+            <div class="card-body">
+                @if (!Model.Cromos.Any())
+                {
+                    <p class="text-muted mb-0">Este álbum no tiene cromos registrados.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead><tr><th>#</th><th>Jugador</th><th>Equipo</th><th>Edición</th><th class="text-end">Valor</th><th></th></tr></thead>
+                            <tbody>
+                                @foreach (var c in Model.Cromos.OrderBy(c => c.NumeroCromo))
+                                {
+                                    <tr>
+                                        <td><span class="badge badge-dorado">#@c.NumeroCromo</span></td>
+                                        <td class="fw-semibold">@c.Jugador?.Nombre</td>
+                                        <td>@c.Equipo?.Nombre</td>
+                                        <td>@c.Edicion</td>
+                                        <td class="text-end text-danger fw-bold">@c.ValorMercado.ToString("C")</td>
+                                        <td><a asp-controller="Cromos" asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-outline-wcs"><i class="bi bi-eye"></i></a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
