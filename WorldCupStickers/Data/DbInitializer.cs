@@ -112,8 +112,12 @@ public static class DbInitializer
         // ---------------- USUARIOS + COLECCIÓN (relación N:M) ----------------
         var usuarios = new List<Usuario>
         {
-            new() { Nombre = "Nicolás López",  Email = "nicolas@cromos.com" },
-            new() { Nombre = "Coleccionista 2", Email = "colega@cromos.com" }
+            new() { Nombre = "Nicolás López",   Email = "nicolas@cromos.com",
+                    NombreUsuario = "nicolaslopez",
+                    PasswordHash  = BCrypt.Net.BCrypt.HashPassword("PasswOrd#1") },
+            new() { Nombre = "Melissa Torres", Email = "melissa@cromos.com",
+                    NombreUsuario = "melissatorres",
+                    PasswordHash  = BCrypt.Net.BCrypt.HashPassword("PassWord#2") }
         };
         context.Usuarios.AddRange(usuarios);
         await context.SaveChangesAsync();

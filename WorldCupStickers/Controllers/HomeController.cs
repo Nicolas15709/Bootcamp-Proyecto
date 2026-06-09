@@ -18,6 +18,9 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
+        if (!HttpContext.Session.GetInt32("UsuarioId").HasValue)
+            return RedirectToAction("Index", "Login");
+
         var modelo = new DashboardViewModel
         {
             TotalPaises = await _context.Paises.CountAsync(),

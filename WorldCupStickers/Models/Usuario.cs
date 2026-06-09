@@ -14,6 +14,8 @@ public class Usuario
     [EmailAddress(ErrorMessage = "El email no tiene un formato válido.")]
     [StringLength(150)]
     public string Email { get; set; } = string.Empty;
+    public string NombreUsuario { get; set; } = string.Empty;
+    public string PasswordHash { get; set; } = string.Empty;
 
     // Relaciones
     public ICollection<UsuarioCromo> UsuarioCromos { get; set; } = new List<UsuarioCromo>();
