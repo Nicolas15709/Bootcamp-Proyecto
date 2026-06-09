@@ -1,0 +1,149 @@
+@model Cromo
+@{
+    ViewData["Title"] = "Nuevo cromo";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-plus-circle"></i> Nuevo cromo</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <label asp-for="NumeroCromo" class="form-label"></label>
+                    <input asp-for="NumeroCromo" class="form-control" />
+                    <span asp-validation-for="NumeroCromo" class="text-danger"></span>
+                </div>
+                <div class="col-md-5">
+                    <label asp-for="Edicion" class="form-label"></label>
+                    <input asp-for="Edicion" class="form-control" />
+                    <span asp-validation-for="Edicion" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="ValorMercado" class="form-label"></label>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input asp-for="ValorMercado" class="form-control" />
+                    </div>
+                    <span asp-validation-for="ValorMercado" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="JugadorId" class="form-label"></label>
+                    <select asp-for="JugadorId" id="selectJugador" class="form-select" asp-items="ViewBag.Jugadores">
+                        <option value="">-- Jugador --</option>
+                    </select>
+                    <span asp-validation-for="JugadorId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="EquipoId" class="form-label"></label>
+                    <select asp-for="EquipoId" class="form-select" asp-items="ViewBag.Equipos">
+                        <option value="">-- Equipo --</option>
+                    </select>
+                    <span asp-validation-for="EquipoId" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="AlbumId" class="form-label"></label>
+                    <select asp-for="AlbumId" class="form-select" asp-items="ViewBag.Albumes">
+                        <option value="">-- Álbum --</option>
+                    </select>
+                    <span asp-validation-for="AlbumId" class="text-danger"></span>
+                </div>
+
+                {{!-- FotoUrl + botón API --}}
+                <div class="col-md-8">
+                    <label asp-for="FotoUrl" class="form-label"></label>
+                    <div class="input-group">
+                        <input asp-for="FotoUrl" id="inputFotoUrl" class="form-control" placeholder="https://... (o busca con la API)" />
+                        <button type="button" id="btnBuscarApi" class="btn btn-outline-warning" title="Buscar foto en TheSportsDB">
+                            <i class="bi bi-search"></i> Buscar foto (API)
+                        </button>
+                    </div>
+                    <span asp-validation-for="FotoUrl" class="text-danger"></span>
+                    <div id="apiMsg" class="form-text"></div>
+                </div>
+                <div class="col-md-4">
+                    <label for="fotoFile" class="form-label">Subir foto (opcional)</label>
+                    <input type="file" name="fotoFile" id="fotoFile" class="form-control" accept=".jpg,.jpeg,.png,.webp" />
+                </div>
+
+                {{!-- Preview de foto --}}
+                <div class="col-12" id="fotoPreviewBox" style="display:none">
+                    <span class="text-muted small">Vista previa:</span><br />
+                    <img id="fotoPreview" src="" style="max-height:140px;border-radius:.5rem;border:2px solid var(--wcs-dorado);margin-top:4px;" alt="Preview" />
+                </div>
+            </div>
+            <div class="mt-4">
+                <button type="submit" class="btn btn-wcs"><i class="bi bi-save"></i> Guardar</button>
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+    (() => {
+        const selectJugador = document.getElementById('selectJugador');
+        const inputFotoUrl  = document.getElementById('inputFotoUrl');
+        const btnBuscar     = document.getElementById('btnBuscarApi');
+        const apiMsg        = document.getElementById('apiMsg');
+        const previewBox    = document.getElementById('fotoPreviewBox');
+        const previewImg    = document.getElementById('fotoPreview');
+
+        function mostrarPreview(url) {
+            if (url) {
+                previewImg.src = url;
+                previewBox.style.display = 'block';
+            } else {
+                previewBox.style.display = 'none';
+            }
+        }
+
+        async function buscarFoto(nombre) {
+            if (!nombre) return;
+            btnBuscar.disabled = true;
+            apiMsg.innerHTML = '<span class="text-muted"><i class="bi bi-hourglass-split"></i> Buscando en TheSportsDB...</span>';
+            try {
+                const r = await fetch(`/Cromos/BuscarFotoApi?nombre=${encodeURIComponent(nombre)}`);
+                const data = await r.json();
+                if (data.ok) {
+                    inputFotoUrl.value = data.fotoUrl;
+                    mostrarPreview(data.fotoUrl);
+                    apiMsg.innerHTML = `<span class="text-success"><i class="bi bi-check-circle"></i> Foto encontrada para <b>${data.nombre}</b> (${data.equipo ?? ''}).</span>`;
+                } else {
+                    apiMsg.innerHTML = `<span class="text-warning"><i class="bi bi-exclamation-circle"></i> ${data.mensaje}</span>`;
+                }
+            } catch {
+                apiMsg.innerHTML = '<span class="text-danger"><i class="bi bi-x-circle"></i> Error al conectar con la API.</span>';
+            } finally {
+                btnBuscar.disabled = false;
+            }
+        }
+
+        // Botón manual
+        btnBuscar.addEventListener('click', () => {
+            const nombre = selectJugador.options[selectJugador.selectedIndex]?.text ?? '';
+            if (!nombre || nombre.startsWith('--')) {
+                apiMsg.innerHTML = '<span class="text-warning">Selecciona un jugador primero.</span>';
+                return;
+            }
+            buscarFoto(nombre);
+        });
+
+        // Auto-buscar al cambiar el jugador
+        selectJugador.addEventListener('change', () => {
+            const nombre = selectJugador.options[selectJugador.selectedIndex]?.text ?? '';
+            if (nombre && !nombre.startsWith('--')) buscarFoto(nombre);
+        });
+
+        // Preview si ya hay URL
+        inputFotoUrl.addEventListener('input', () => mostrarPreview(inputFotoUrl.value));
+        mostrarPreview(inputFotoUrl.value);
+    })();
+    </script>
+}

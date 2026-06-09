@@ -1,0 +1,41 @@
+@model Equipo
+@{
+    ViewData["Title"] = "Eliminar equipo";
+}
+
+<div class="wcs-page-header">
+    <h1 class="text-danger"><i class="bi bi-trash"></i> Eliminar equipo</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card border-danger">
+    <div class="card-body">
+        <p class="lead">¿Estás seguro de que deseas eliminar este equipo?</p>
+        <div class="d-flex align-items-center gap-3 mb-3">
+            @if (!string.IsNullOrEmpty(Model.LogoUrl))
+            {
+                <img src="@Model.LogoUrl" class="equipo-logo" alt="@Model.Nombre" />
+            }
+            <div>
+                <h5 class="mb-0">@Model.Nombre</h5>
+                <small class="text-muted">@Model.Pais?.Nombre — Grupo @Model.GrupoMundialista</small>
+            </div>
+        </div>
+
+        @if (Model.Jugadores.Any() || Model.Cromos.Any())
+        {
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Tiene <strong>@Model.Jugadores.Count jugador(es)</strong> y <strong>@Model.Cromos.Count cromo(s)</strong> asociados. Elimínalos o reasígnalos primero.
+            </div>
+        }
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger" @((Model.Jugadores.Any() || Model.Cromos.Any()) ? "disabled" : "")>
+                <i class="bi bi-trash"></i> Sí, eliminar
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
