@@ -1,0 +1,37 @@
+@model Pais
+@{
+    ViewData["Title"] = "Eliminar país";
+}
+
+<div class="wcs-page-header">
+    <h1 class="text-danger"><i class="bi bi-trash"></i> Eliminar país</h1>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+</div>
+
+<div class="card border-danger">
+    <div class="card-body">
+        <p class="lead">¿Estás seguro de que deseas eliminar este país?</p>
+        <dl class="row">
+            <dt class="col-sm-3">Nombre</dt><dd class="col-sm-9">@Model.Nombre</dd>
+            <dt class="col-sm-3">Continente</dt><dd class="col-sm-9">@Model.Continente</dd>
+            <dt class="col-sm-3">Código FIFA</dt><dd class="col-sm-9">@Model.CodigoFifa</dd>
+            <dt class="col-sm-3">Equipos asociados</dt><dd class="col-sm-9">@Model.Equipos.Count</dd>
+        </dl>
+
+        @if (Model.Equipos.Any())
+        {
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Este país tiene <strong>@Model.Equipos.Count equipo(s)</strong> asociado(s). Debes eliminarlos o reasignarlos primero.
+            </div>
+        }
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id" />
+            <button type="submit" class="btn btn-danger" @(Model.Equipos.Any() ? "disabled" : "")>
+                <i class="bi bi-trash"></i> Sí, eliminar
+            </button>
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

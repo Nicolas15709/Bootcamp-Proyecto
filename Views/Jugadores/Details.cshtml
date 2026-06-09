@@ -1,0 +1,66 @@
+@model Jugador
+@{
+    ViewData["Title"] = $"Jugador - {Model.Nombre}";
+    var edad = (int)((DateTime.Today - Model.FechaNacimiento).TotalDays / 365.25);
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-person-fill"></i> @Model.Nombre</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-info-circle"></i> Información del jugador</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5">Nombre</dt><dd class="col-7">@Model.Nombre</dd>
+                    <dt class="col-5">Posición</dt><dd class="col-7">@Model.Posicion</dd>
+                    <dt class="col-5">N° camiseta</dt><dd class="col-7"><span class="badge badge-dorado">@Model.NumeroCamiseta</span></dd>
+                    <dt class="col-5">Nacimiento</dt><dd class="col-7">@Model.FechaNacimiento.ToString("dd/MM/yyyy") (@edad años)</dd>
+                    <dt class="col-5">Equipo</dt>
+                    <dd class="col-7">
+                        <a asp-controller="Equipos" asp-action="Details" asp-route-id="@Model.EquipoId">@Model.Equipo?.Nombre</a>
+                    </dd>
+                    <dt class="col-5">País</dt><dd class="col-7">@Model.Equipo?.Pais?.Nombre</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-7">
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-card-image"></i> Cromos de @Model.Nombre (@Model.Cromos.Count)</div>
+            <div class="card-body">
+                @if (!Model.Cromos.Any())
+                {
+                    <p class="text-muted mb-0">Este jugador no tiene cromos registrados.</p>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead><tr><th>#</th><th>Edición</th><th>Álbum</th><th class="text-end">Valor</th><th></th></tr></thead>
+                            <tbody>
+                                @foreach (var c in Model.Cromos.OrderBy(c => c.NumeroCromo))
+                                {
+                                    <tr>
+                                        <td><span class="badge badge-dorado">#@c.NumeroCromo</span></td>
+                                        <td>@c.Edicion</td>
+                                        <td>@c.Album?.Nombre</td>
+                                        <td class="text-end text-danger fw-bold">@c.ValorMercado.ToString("C")</td>
+                                        <td><a asp-controller="Cromos" asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-outline-wcs"><i class="bi bi-eye"></i></a></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

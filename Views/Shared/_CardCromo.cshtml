@@ -1,0 +1,68 @@
+@model Cromo
+
+<div class="cromo-card" data-tilt>
+
+    <!-- Player photo -->
+    <div class="cromo-photo">
+        @if (!string.IsNullOrEmpty(Model.FotoUrl))
+        {
+            <img src="@Model.FotoUrl" alt="@Model.Jugador?.Nombre" loading="lazy" />
+        }
+        else
+        {
+            <div class="cromo-photo-placeholder">
+                <i class="bi bi-person-bounding-box"></i>
+            </div>
+        }
+    </div>
+
+    <!-- Gradient overlay -->
+    <div class="cromo-overlay"></div>
+
+    <!-- Holographic foil -->
+    <div class="cromo-holo"></div>
+
+    <!-- Specular glare -->
+    <div class="cromo-glare"></div>
+
+    <!-- Number badge -->
+    <span class="cromo-num">#@Model.NumeroCromo.ToString("D3")</span>
+
+    <!-- Special star -->
+    @if (Model.Album?.EdicionEspecial == true)
+    {
+        <span class="cromo-special"><i class="bi bi-star-fill" style="font-size:.5rem"></i></span>
+    }
+
+    <!-- Bottom info -->
+    <div class="cromo-info">
+        <div class="cromo-nombre">@Model.Jugador?.Nombre</div>
+        <div class="cromo-equipo-row">
+            @if (!string.IsNullOrEmpty(Model.Equipo?.LogoUrl))
+            {
+                <img src="@Model.Equipo.LogoUrl" alt="" />
+            }
+            <span>@(Model.Equipo?.Nombre?.Replace("Selección ", "") ?? "")</span>
+        </div>
+        <div class="cromo-meta">
+            @if (!string.IsNullOrEmpty(Model.Jugador?.Posicion))
+            {
+                var pos = Model.Jugador.Posicion;
+                var abbr = pos.Length >= 3 ? pos[..3].ToUpperInvariant() : pos.ToUpperInvariant();
+                <span class="cromo-pos-badge">@abbr</span>
+            }
+            <span class="cromo-valor">@Model.ValorMercado.ToString("C0")</span>
+        </div>
+    </div>
+
+    <!-- Action buttons (appear on hover) -->
+    <div class="cromo-actions">
+        <a asp-controller="Cromos" asp-action="Details" asp-route-id="@Model.Id"
+           class="btn btn-sm" title="Ver detalle"><i class="bi bi-eye"></i></a>
+        <a asp-controller="Cromos" asp-action="Edit"    asp-route-id="@Model.Id"
+           class="btn btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
+        <a asp-controller="Cromos" asp-action="Delete"  asp-route-id="@Model.Id"
+           class="btn btn-sm" title="Eliminar"><i class="bi bi-trash"></i></a>
+    </div>
+
+</div>

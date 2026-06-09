@@ -1,0 +1,72 @@
+@model JugadorFiltroViewModel
+@{
+    ViewData["Title"] = "Jugadores";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-person-fill"></i> Jugadores</h1>
+    <a asp-action="Create" class="btn btn-wcs"><i class="bi bi-plus-circle"></i> Nuevo jugador</a>
+</div>
+
+<form method="get" class="card card-body mb-4">
+    <div class="row g-2">
+        <div class="col-md-3">
+            <input type="text" name="nombre" value="@Model.Nombre" class="form-control" placeholder="Nombre..." />
+        </div>
+        <div class="col-md-3">
+            <select name="paisId" class="form-select" asp-items="Model.Paises">
+                <option value="">Todos los países</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="equipoId" class="form-select" asp-items="Model.Equipos">
+                <option value="">Todos los equipos</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="posicion" class="form-select" asp-items="Model.Posiciones">
+                <option value="">Todas las posiciones</option>
+            </select>
+        </div>
+    </div>
+    <div class="mt-2 d-flex gap-2">
+        <button type="submit" class="btn btn-outline-wcs"><i class="bi bi-funnel"></i> Filtrar</button>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-x-lg"></i> Limpiar</a>
+    </div>
+</form>
+
+@if (!Model.Jugadores.Any())
+{
+    <div class="alert alert-info"><i class="bi bi-info-circle"></i> No se encontraron jugadores con esos filtros.</div>
+}
+else
+{
+    <div class="card">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead>
+                    <tr><th>#</th><th>Nombre</th><th>Posición</th><th>Equipo</th><th>País</th><th class="text-center">Cromos</th><th class="text-end">Acciones</th></tr>
+                </thead>
+                <tbody>
+                    @foreach (var j in Model.Jugadores)
+                    {
+                        <tr>
+                            <td><span class="badge badge-dorado">@j.NumeroCamiseta</span></td>
+                            <td class="fw-semibold">@j.Nombre</td>
+                            <td>@j.Posicion</td>
+                            <td>@j.Equipo?.Nombre</td>
+                            <td>@j.Equipo?.Pais?.Nombre</td>
+                            <td class="text-center">@j.Cromos.Count</td>
+                            <td class="text-end">
+                                <a asp-action="Details" asp-route-id="@j.Id" class="btn btn-sm btn-outline-wcs"><i class="bi bi-eye"></i></a>
+                                <a asp-action="Edit" asp-route-id="@j.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
+                                <a asp-action="Delete" asp-route-id="@j.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <p class="text-muted small mt-2">@Model.Jugadores.Count() jugador(es) encontrado(s).</p>
+}

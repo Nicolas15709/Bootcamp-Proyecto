@@ -1,0 +1,37 @@
+@model Cromo
+@{
+    ViewData["Title"] = $"Cromo #{Model.NumeroCromo}";
+}
+
+<div class="wcs-page-header">
+    <h1><i class="bi bi-card-image"></i> Cromo #@Model.NumeroCromo.ToString("D3")</h1>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-outline-primary"><i class="bi bi-pencil"></i> Editar</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</a>
+    </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <partial name="_CardCromo" model="Model" />
+    </div>
+    <div class="col-md-7 col-lg-6">
+        <div class="card">
+            <div class="card-header wcs-card-header"><i class="bi bi-info-circle"></i> Detalle del cromo</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5">Número</dt><dd class="col-7"><span class="badge badge-dorado">#@Model.NumeroCromo.ToString("D3")</span></dd>
+                    <dt class="col-5">Jugador</dt>
+                    <dd class="col-7"><a asp-controller="Jugadores" asp-action="Details" asp-route-id="@Model.JugadorId">@Model.Jugador?.Nombre</a></dd>
+                    <dt class="col-5">Equipo</dt>
+                    <dd class="col-7"><a asp-controller="Equipos" asp-action="Details" asp-route-id="@Model.EquipoId">@Model.Equipo?.Nombre</a></dd>
+                    <dt class="col-5">País</dt><dd class="col-7">@Model.Equipo?.Pais?.Nombre</dd>
+                    <dt class="col-5">Álbum</dt>
+                    <dd class="col-7"><a asp-controller="Albumes" asp-action="Details" asp-route-id="@Model.AlbumId">@Model.Album?.Nombre</a></dd>
+                    <dt class="col-5">Edición</dt><dd class="col-7">@Model.Edicion</dd>
+                    <dt class="col-5">Valor de mercado</dt><dd class="col-7 text-danger fw-bold fs-5">@Model.ValorMercado.ToString("C")</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>

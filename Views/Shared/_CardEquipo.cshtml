@@ -1,0 +1,57 @@
+@model Equipo
+
+<div class="equipo-card">
+    <div class="d-flex align-items-center gap-3 mb-3">
+        @if (!string.IsNullOrEmpty(Model.LogoUrl))
+        {
+            <img src="@Model.LogoUrl" class="equipo-logo" alt="@Model.Nombre" />
+        }
+        else
+        {
+            <div class="equipo-logo d-flex align-items-center justify-content-center">
+                <i class="bi bi-shield-fill text-dim fs-3"></i>
+            </div>
+        }
+        <div>
+            <h5>@Model.Nombre</h5>
+            <div class="equipo-meta">
+                <i class="bi bi-geo-alt-fill me-1" style="color:var(--gold-3);font-size:.7rem"></i>@Model.Pais?.Nombre
+            </div>
+        </div>
+    </div>
+
+    <div class="equipo-stats">
+        <div>
+            <div class="equipo-stat-num">@Model.Jugadores.Count</div>
+            <div class="equipo-stat-lbl">Jugadores</div>
+        </div>
+        <div>
+            <div class="equipo-stat-num">@Model.Cromos.Count</div>
+            <div class="equipo-stat-lbl">Cromos</div>
+        </div>
+        <div>
+            <div class="equipo-stat-num">@Model.AnioFundacion</div>
+            <div class="equipo-stat-lbl">Fundación</div>
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-2 mb-3 flex-wrap">
+        <span class="grupo-badge">@Model.GrupoMundialista</span>
+        <span class="text-dim" style="font-size:.75rem">Grupo @Model.GrupoMundialista</span>
+        <span class="ms-auto text-dim" style="font-size:.75rem">
+            <i class="bi bi-person-badge me-1"></i>@Model.DirectorTecnico
+        </span>
+    </div>
+
+    <div class="mt-auto d-flex gap-2">
+        <a asp-controller="Equipos" asp-action="Details" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-wcs flex-fill">
+            <i class="bi bi-eye me-1"></i>Ver
+        </a>
+        <a asp-controller="Equipos" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-pencil"></i>
+        </a>
+        <a asp-controller="Equipos" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-trash"></i>
+        </a>
+    </div>
+</div>
