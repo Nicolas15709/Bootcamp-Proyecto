@@ -24,7 +24,7 @@ public class CromosController : Controller
     // GET: Cromos
     public async Task<IActionResult> Index(int? numeroCromo, string? jugador, int? paisId, int? albumId, string? edicion)
     {
-        if (!paisId.HasValue && string.IsNullOrWhiteSpace(jugador) && !numeroCromo.HasValue)
+        if (!paisId.HasValue && string.IsNullOrWhiteSpace(jugador) && !numeroCromo.HasValue && !albumId.HasValue)
         {
             var primerPais = await _context.Paises.OrderBy(p => p.RankingFifa).FirstOrDefaultAsync();
             if (primerPais != null)
