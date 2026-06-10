@@ -8,13 +8,12 @@
     <div class="d-flex gap-2">
         <form asp-action="ActualizarFotosBulk" method="post">
             @Html.AntiForgeryToken()
+            <input type="hidden" name="paisId" value="@Model.PaisId" />
             <button type="submit" class="btn btn-outline-wcs btn-sm">
-                <i class="bi bi-cloud-download me-1"></i>Sync fotos
+                <i class="bi bi-cloud-download me-1"></i>
+                @(Model.PaisId.HasValue ? "Sync fotos del país" : "Sync todas las fotos")
             </button>
         </form>
-        <a asp-action="Create" class="btn btn-wcs btn-sm">
-            <i class="bi bi-plus-circle me-1"></i>Nuevo cromo
-        </a>
     </div>
 </div>
 
@@ -30,13 +29,7 @@
                    class="form-control form-control-sm" placeholder="Jugador..." />
         </div>
         <div class="col-6 col-md-2">
-            <select name="equipoId" class="form-select form-select-sm" asp-items="Model.Equipos">
-                <option value="">Equipo</option>
-            </select>
-        </div>
-        <div class="col-6 col-md-2">
             <select name="paisId" class="form-select form-select-sm" asp-items="Model.Paises">
-                <option value="">País</option>
             </select>
         </div>
         <div class="col-6 col-md-2">
