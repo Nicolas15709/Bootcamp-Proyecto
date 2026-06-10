@@ -22,8 +22,14 @@ public class CromosController : Controller
     }
 
     // GET: Cromos
-    public async Task<IActionResult> Index(int? numeroCromo, string? jugador, int? equipoId, int? paisId, int? albumId, string? edicion)
+    public async Task<IActionResult> Index(int? numeroCromo, string? jugador, int? paisId, int? albumId, string? edicion)
     {
+        if (!paisId.HasValue && string.IsNullOrWhiteSpace(jugador) && !numeroCromo.HasValue && !albumId.HasValue)
+        {
+            var primerPais = await _context.Paises.OrderBy(p => p.RankingFifa).FirstOrDefaultAsync();
+            if (primerPais != null)
+                paisId = primerPais.Id;
+        }
         var query = _context.Cromos
             .Include(c => c.Jugador)
             .Include(c => c.Equipo)
@@ -36,9 +42,6 @@ public class CromosController : Controller
 
         if (!string.IsNullOrWhiteSpace(jugador))
             query = query.Where(c => c.Jugador!.Nombre.Contains(jugador));
-
-        if (equipoId.HasValue)
-            query = query.Where(c => c.EquipoId == equipoId.Value);
 
         if (paisId.HasValue)
             query = query.Where(c => c.Equipo!.PaisId == paisId.Value);
@@ -53,12 +56,10 @@ public class CromosController : Controller
         {
             NumeroCromo = numeroCromo,
             Jugador = jugador,
-            EquipoId = equipoId,
             PaisId = paisId,
             AlbumId = albumId,
             Edicion = edicion,
             Cromos = await query.OrderBy(c => c.NumeroCromo).ToListAsync(),
-            Equipos = new SelectList(await _context.Equipos.OrderBy(e => e.Nombre).ToListAsync(), "Id", "Nombre", equipoId),
             Paises = new SelectList(await _context.Paises.OrderBy(p => p.Nombre).ToListAsync(), "Id", "Nombre", paisId),
             Albumes = new SelectList(await _context.Albumes.OrderBy(a => a.Nombre).ToListAsync(), "Id", "Nombre", albumId),
             Ediciones = new SelectList(await _context.Cromos.Select(c => c.Edicion).Distinct().OrderBy(e => e).ToListAsync(), edicion)
@@ -237,17 +238,22 @@ public class CromosController : Controller
     /// </summary>
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> ActualizarFotosBulk()
+    public async Task<IActionResult> ActualizarFotosBulk(int? paisId)
     {
-        var cromos = await _context.Cromos
+        var query = _context.Cromos
             .Include(c => c.Jugador)
-            .Where(c => c.FotoUrl == null || c.FotoUrl.Contains("placehold.co"))
-            .ToListAsync();
+            .Include(c => c.Equipo)
+            .Where(c => c.FotoUrl == null || c.FotoUrl.Contains("placehold.co"));
+
+        if (paisId.HasValue)
+            query = query.Where(c => c.Equipo!.PaisId == paisId.Value);
+
+        var cromos = await query.ToListAsync();
 
         if (!cromos.Any())
         {
-            TempData["Success"] = "Todos los cromos ya tienen foto real. No hay nada que actualizar.";
-            return RedirectToAction(nameof(Index));
+            TempData["Success"] = "Todos los cromos de ese país ya tienen foto real.";
+            return RedirectToAction(nameof(Index), new { paisId });
         }
 
         int actualizados = 0;
@@ -268,15 +274,14 @@ public class CromosController : Controller
                 noEncontrados++;
             }
 
-            // Pequeña pausa para no saturar la API gratuita
             await Task.Delay(350);
         }
 
         await _context.SaveChangesAsync();
 
         TempData["Success"] = $"Fotos actualizadas: {actualizados}. " +
-                              (noEncontrados > 0 ? $"No encontrados en API: {noEncontrados}." : "");
-        return RedirectToAction(nameof(Index));
+                              (noEncontrados > 0 ? $"No encontrados: {noEncontrados}." : "");
+        return RedirectToAction(nameof(Index), new { paisId });
     }
 
     private async Task ProcesarFotoAsync(Cromo cromo, IFormFile? fotoFile)
