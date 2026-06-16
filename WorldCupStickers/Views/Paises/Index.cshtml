@@ -5,9 +5,6 @@
 
 <div class="wcs-page-header">
     <h1><i class="bi bi-globe-americas"></i> Países mundialistas</h1>
-    <a asp-action="Create" class="btn btn-wcs">
-        <i class="bi bi-plus-circle"></i> Nuevo país
-    </a>
 </div>
 
 <form method="get" class="row g-2 mb-4">
@@ -60,8 +57,6 @@ else
                             <td class="text-center">@pais.Equipos.Count</td>
                             <td class="text-end">
                                 <a asp-action="Details" asp-route-id="@pais.Id" class="btn btn-sm btn-outline-wcs"><i class="bi bi-eye"></i></a>
-                                <a asp-action="Edit" asp-route-id="@pais.Id" class="btn btn-sm btn-outline-primary"><i class="bi bi-pencil"></i></a>
-                                <a asp-action="Delete" asp-route-id="@pais.Id" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></a>
                             </td>
                         </tr>
                     }
