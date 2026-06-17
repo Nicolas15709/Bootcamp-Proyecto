@@ -21,6 +21,11 @@ public class HomeController : Controller
         if (!HttpContext.Session.GetInt32("UsuarioId").HasValue)
             return RedirectToAction("Index", "Login");
 
+        var usuarioId = HttpContext.Session.GetInt32("UsuarioId")!.Value;
+        var miColeccion = await _context.UsuarioCromos
+            .Where(uc => uc.UsuarioId == usuarioId)
+            .ToListAsync();
+
         var modelo = new DashboardViewModel
         {
             TotalPaises = await _context.Paises.CountAsync(),
@@ -28,6 +33,9 @@ public class HomeController : Controller
             TotalJugadores = await _context.Jugadores.CountAsync(),
             TotalCromos = await _context.Cromos.CountAsync(),
             TotalAlbumes = await _context.Albumes.CountAsync(),
+            MisCromos = miColeccion.Count,
+            MisRepetidos = miColeccion.Count(uc => uc.Cantidad > 1),
+            MisFaltan = 75 - miColeccion.Count,
             UltimosCromos = await _context.Cromos
                 .Include(c => c.Jugador)
                 .Include(c => c.Equipo)

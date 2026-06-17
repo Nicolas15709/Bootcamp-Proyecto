@@ -59,10 +59,16 @@
     <div class="cromo-actions">
         <a asp-controller="Cromos" asp-action="Details" asp-route-id="@Model.Id"
            class="btn btn-sm" title="Ver detalle"><i class="bi bi-eye"></i></a>
-        <a asp-controller="Cromos" asp-action="Edit"    asp-route-id="@Model.Id"
-           class="btn btn-sm" title="Editar"><i class="bi bi-pencil"></i></a>
-        <a asp-controller="Cromos" asp-action="Delete"  asp-route-id="@Model.Id"
-           class="btn btn-sm" title="Eliminar"><i class="bi bi-trash"></i></a>
+        @if (Context.Session.GetInt32("UsuarioId").HasValue)
+        {
+            <form asp-controller="Cromos" asp-action="AgregarAColeccion" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="cromoId" value="@Model.Id" />
+                <button type="submit" class="btn btn-sm" title="Agregar a mi colección">
+                    <i class="bi bi-plus-circle"></i>
+                </button>
+            </form>
+        }
     </div>
 
 </div>

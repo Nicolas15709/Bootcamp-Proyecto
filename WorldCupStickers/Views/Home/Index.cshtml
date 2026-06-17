@@ -11,52 +11,36 @@
             <h1 class="hero-title">WORLD CUP<br><span>STICKER MANAGER</span></h1>
             <p class="hero-sub">Administra tu colección del mundial. Jugadores, equipos, álbumes y cromos con fotos reales.</p>
             <div class="hero-btns">
-                <a asp-controller="Cromos" asp-action="Create" class="btn btn-wcs">
-                    <i class="bi bi-plus-circle me-1"></i>Nuevo cromo
-                </a>
-                <a asp-controller="Albumes" asp-action="Index" class="btn btn-outline-wcs">
-                    Ver álbumes
+                <a asp-controller="MiColeccion" asp-action="Index" class="btn btn-outline-wcs">
+                    <i class="bi bi-collection me-1"></i>Ver mi colección
                 </a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Stat cards -->
+<!-- Mi Colección stats -->
+<h2 class="section-title mb-3"><span class="title-bar"></span>Mi Colección</h2>
 <div class="row g-3 mb-5">
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Paises" asp-action="Index" class="stat-card stat-azul">
-            <i class="bi bi-globe-americas stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalPaises">@Model.TotalPaises</div>
-            <div class="stat-label">Países</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Equipos" asp-action="Index" class="stat-card stat-verde">
-            <i class="bi bi-shield-fill stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalEquipos">@Model.TotalEquipos</div>
-            <div class="stat-label">Equipos</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Jugadores" asp-action="Index" class="stat-card stat-morado">
-            <i class="bi bi-person-fill stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalJugadores">@Model.TotalJugadores</div>
-            <div class="stat-label">Jugadores</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Cromos" asp-action="Index" class="stat-card stat-rojo">
-            <i class="bi bi-card-image stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalCromos">@Model.TotalCromos</div>
-            <div class="stat-label">Cromos</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Albumes" asp-action="Index" class="stat-card stat-dorado">
+    <div class="col-6 col-md-4">
+        <a asp-controller="MiColeccion" asp-action="Index" class="stat-card stat-dorado">
             <i class="bi bi-collection-fill stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalAlbumes">@Model.TotalAlbumes</div>
-            <div class="stat-label">Álbumes</div>
+            <div class="stat-num">@Model.MisCromos</div>
+            <div class="stat-label">Mis Cromos</div>
+        </a>
+    </div>
+    <div class="col-6 col-md-4">
+        <a asp-controller="MiColeccion" asp-action="Index" class="stat-card stat-rojo">
+            <i class="bi bi-copy stat-icon"></i>
+            <div class="stat-num">@Model.MisRepetidos</div>
+            <div class="stat-label">Repetidos</div>
+        </a>
+    </div>
+    <div class="col-6 col-md-4">
+        <a asp-controller="Cromos" asp-action="Index" class="stat-card stat-azul">
+            <i class="bi bi-question-circle stat-icon"></i>
+            <div class="stat-num">@Model.MisFaltan</div>
+            <div class="stat-label">Me faltan</div>
         </a>
     </div>
 </div>
@@ -83,13 +67,6 @@ else
     </div>
 }
 
-<!-- Equipos destacados -->
-<div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-title"><span class="title-bar"></span>Equipos destacados</h2>
-    <a asp-controller="Equipos" asp-action="Index" class="btn btn-outline-wcs btn-sm">
-        Ver todos <i class="bi bi-arrow-right ms-1"></i>
-    </a>
-</div>
 
 @if (!Model.EquiposDestacados.Any())
 {

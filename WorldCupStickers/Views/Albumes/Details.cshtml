@@ -36,6 +36,7 @@
                 </dl>
                 <hr />
                 <p class="mb-1">Cromos registrados: <strong>@registrados / @Model.CantidadCromos</strong></p>
+                <p class="mb-1">Mis cromos: <strong>@ViewBag.MisCromosCount / @Model.CantidadCromos</strong></p>
                 <div class="progress mb-1" style="height: 24px;">
                     <div class="progress-bar bg-warning text-dark fw-bold" role="progressbar"
                          style="width: @progreso%;" aria-valuenow="@progreso" aria-valuemin="0" aria-valuemax="100">
@@ -63,8 +64,7 @@
                             <tbody>
                                 @foreach (var c in Model.Cromos.OrderBy(c => c.NumeroCromo))
                                 {
-                                    <tr>
-                                        <td><span class="badge badge-dorado">#@c.NumeroCromo</span></td>
+                                    <tr class="@(((List<int>)ViewBag.MisCromosIds).Contains(c.Id) ? "table-warning" : "")">
                                         <td class="fw-semibold">@c.Jugador?.Nombre</td>
                                         <td>@c.Equipo?.Nombre</td>
                                         <td>@c.Edicion</td>

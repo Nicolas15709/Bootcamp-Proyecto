@@ -83,14 +83,13 @@ public static class DbInitializer
         // ---------------- ÁLBUM (1) ----------------
         var album = new Album
         {
-            Nombre = "Mundial Qatar 2022",
-            Anio = 2022,
-            CantidadCromos = 670,
+            Nombre = "FIFA World Cup 2026",
+            Anio = 2026,
+            CantidadCromos = 75,
             EdicionEspecial = true
         };
         context.Albumes.Add(album);
         await context.SaveChangesAsync();
-
         // ---------------- JUGADORES (20) ----------------
         // Jugadores se crean desde la API en ExpandirJugadoresAsync, chai.
 
@@ -122,7 +121,8 @@ public static class DbInitializer
         if (await context.Jugadores.AnyAsync()) return;
 
         var equipos = await context.Equipos.Include(e => e.Pais).ToListAsync();
-        var album = await context.Albumes.FirstAsync();
+        var album = await context.Albumes.FirstOrDefaultAsync();
+        if (album == null) return;
         var usuarios = await context.Usuarios.ToListAsync();
 
         string Placeholder(string nombre) =>
@@ -153,7 +153,10 @@ public static class DbInitializer
                         }
                         await Task.Delay(400);
                     }
-                    catch { }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"Error API para {nombre}: {ex.Message}");
+                    }
                 }
 
                 var jugador = new Jugador
@@ -186,10 +189,19 @@ public static class DbInitializer
         if (todosLosCromos.Count >= 26 && usuarios.Count >= 2)
         {
             context.UsuarioCromos.AddRange(
+                // Nicolás — cromos de Argentina (0-4) y Ecuador (40-44)
                 new UsuarioCromo { UsuarioId = usuarios[0].Id, CromoId = todosLosCromos[0].Id, FechaAdquisicion = DateTime.Today.AddDays(-10), Estado = EstadoCromo.Favorito },
-                new UsuarioCromo { UsuarioId = usuarios[0].Id, CromoId = todosLosCromos[10].Id, FechaAdquisicion = DateTime.Today.AddDays(-5), Estado = EstadoCromo.Nuevo },
-                new UsuarioCromo { UsuarioId = usuarios[0].Id, CromoId = todosLosCromos[5].Id, FechaAdquisicion = DateTime.Today.AddDays(-3), Estado = EstadoCromo.Repetido },
-                new UsuarioCromo { UsuarioId = usuarios[1].Id, CromoId = todosLosCromos[25].Id, FechaAdquisicion = DateTime.Today.AddDays(-2), Estado = EstadoCromo.Intercambiable }
+                new UsuarioCromo { UsuarioId = usuarios[0].Id, CromoId = todosLosCromos[1].Id, FechaAdquisicion = DateTime.Today.AddDays(-9), Estado = EstadoCromo.Nuevo },
+                new UsuarioCromo { UsuarioId = usuarios[0].Id, CromoId = todosLosCromos[2].Id, FechaAdquisicion = DateTime.Today.AddDays(-8), Estado = EstadoCromo.Repetido },
+                new UsuarioCromo { UsuarioId = usuarios[0].Id, CromoId = todosLosCromos[40].Id, FechaAdquisicion = DateTime.Today.AddDays(-7), Estado = EstadoCromo.Nuevo },
+                new UsuarioCromo { UsuarioId = usuarios[0].Id, CromoId = todosLosCromos[41].Id, FechaAdquisicion = DateTime.Today.AddDays(-6), Estado = EstadoCromo.Favorito },
+
+                // Melissa — cromos de Brasil (5-9) y Colombia (55-59)
+                new UsuarioCromo { UsuarioId = usuarios[1].Id, CromoId = todosLosCromos[5].Id, FechaAdquisicion = DateTime.Today.AddDays(-5), Estado = EstadoCromo.Nuevo },
+                new UsuarioCromo { UsuarioId = usuarios[1].Id, CromoId = todosLosCromos[6].Id, FechaAdquisicion = DateTime.Today.AddDays(-4), Estado = EstadoCromo.Favorito },
+                new UsuarioCromo { UsuarioId = usuarios[1].Id, CromoId = todosLosCromos[7].Id, FechaAdquisicion = DateTime.Today.AddDays(-3), Estado = EstadoCromo.Intercambiable },
+                new UsuarioCromo { UsuarioId = usuarios[1].Id, CromoId = todosLosCromos[55].Id, FechaAdquisicion = DateTime.Today.AddDays(-2), Estado = EstadoCromo.Nuevo },
+                new UsuarioCromo { UsuarioId = usuarios[1].Id, CromoId = todosLosCromos[56].Id, FechaAdquisicion = DateTime.Today.AddDays(-1), Estado = EstadoCromo.Repetido }
             );
             await context.SaveChangesAsync();
         }

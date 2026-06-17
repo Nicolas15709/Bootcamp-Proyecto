@@ -50,6 +50,26 @@
                         <li class="nav-item"><a class="nav-link @Active("Jugadores")" asp-controller="Jugadores" asp-action="Index">Jugadores</a></li>
                         <li class="nav-item"><a class="nav-link @Active("Cromos")"    asp-controller="Cromos"    asp-action="Index">Cromos</a></li>
                         <li class="nav-item"><a class="nav-link @Active("Albumes")"   asp-controller="Albumes"   asp-action="Index">Álbumes</a></li>
+                        @if (Context.Session.GetInt32("UsuarioId").HasValue)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link @Active("MiColeccion")" asp-controller="MiColeccion" asp-action="Index">
+                                    <i class="bi bi-collection me-1"></i>Mi Colección
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown ms-2">
+                                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                                    <i class="bi bi-person-circle me-1"></i>@Context.Session.GetString("UsuarioNombre")
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item text-danger" asp-controller="Login" asp-action="Salir">
+                                            <i class="bi bi-box-arrow-right me-1"></i>Cerrar sesión
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                 </div>
 

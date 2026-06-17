@@ -58,6 +58,7 @@ public class TheSportsDbService : ITheSportsDbService
             if (!response.IsSuccessStatusCode) return null;
 
             var json = await response.Content.ReadAsStringAsync();
+            _logger.LogInformation("TheSportsDB respuesta para '{Nombre}': {Json}", nombre, json);
             using var doc = JsonDocument.Parse(json);
 
             if (!doc.RootElement.TryGetProperty("player", out var arr)
@@ -92,28 +93,28 @@ public class TheSportsDbService : ITheSportsDbService
     private static IEnumerable<string> GenerarVariantes(string nombre)
     {
         var vistos = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var resultado = new List<string>();
 
-        void Yield(string v)
+        void Agregar(string v)
         {
             if (!string.IsNullOrWhiteSpace(v) && vistos.Add(v))
-                vistos.Add(v); 
+                resultado.Add(v);
         }
 
-        Yield(nombre);
-        Yield(QuitarDiacriticos(nombre));
+        Agregar(nombre);
+        Agregar(QuitarDiacriticos(nombre));
 
         var partes = nombre.Split(' ', StringSplitOptions.RemoveEmptyEntries);
         if (partes.Length > 1)
         {
-            Yield(partes[^1]);
-            Yield(QuitarDiacriticos(partes[^1]));
-            Yield(partes[0]);
-            Yield(QuitarDiacriticos(partes[0]));
-            if (partes.Length >= 2)
-                Yield(partes[^1] + " " + partes[0]);
+            Agregar(partes[^1]);
+            Agregar(QuitarDiacriticos(partes[^1]));
+            Agregar(partes[0]);
+            Agregar(QuitarDiacriticos(partes[0]));
+            Agregar(partes[^1] + " " + partes[0]);
         }
 
-        return vistos;
+        return resultado;
     }
 
     /// <summary>

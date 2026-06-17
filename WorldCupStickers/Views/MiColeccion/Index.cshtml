@@ -1,0 +1,67 @@
+﻿@model IEnumerable<WorldCupStickers.Models.UsuarioCromo>
+@{
+    ViewData["Title"] = "Mi Colección";
+}
+
+<div class="container py-4">
+    <h2 class="fw-bold mb-4">
+        <i class="bi bi-collection me-2 text-warning"></i>
+        Colección de @ViewBag.NombreUsuario
+    </h2>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No tienes cromos en tu colección todavía.</p>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var uc in Model)
+            {
+                <div class="col-12 col-sm-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body d-flex gap-3 align-items-center">
+                            @if (!string.IsNullOrEmpty(uc.Cromo?.FotoUrl))
+                            {
+                                <img src="@uc.Cromo.FotoUrl" alt="@uc.Cromo.Jugador?.Nombre"
+                                     class="rounded" style="width:60px;height:80px;object-fit:cover;" />
+                            }
+                            <div>
+                                <div class="fw-bold">#@uc.Cromo?.NumeroCromo — @uc.Cromo?.Jugador?.Nombre</div>
+                                <div class="small text-muted">@uc.Cromo?.Equipo?.Nombre</div>
+                                <div class="small text-muted">@uc.Cromo?.Edicion</div>
+                                <a asp-controller="Cromos" asp-action="Details" asp-route-id="@uc.CromoId" class="small text-warning">
+                                    Ver cromo
+                                </a>
+
+                                <div class="d-flex align-items-center gap-2 mt-1">
+                                    <span class="small text-muted">Cantidad: @uc.Cantidad</span>
+                                    <form asp-action="IncrementarCantidad" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="cromoId" value="@uc.CromoId" />
+                                        <button type="submit" class="btn btn-outline-warning btn-sm py-0 px-1">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                @if (uc.Cantidad > 1)
+                                {
+                                    <span class="badge bg-warning text-dark">Repetido x@(uc.Cantidad)</span>
+                                }
+
+                                <form asp-action="Eliminar" method="post" class="mt-2"
+                                      onsubmit="return confirm('¿Eliminar este cromo de tu colección?');">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="cromoId" value="@uc.CromoId" />
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                        <i class="bi bi-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

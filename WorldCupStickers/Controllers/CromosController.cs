@@ -305,4 +305,37 @@ public class CromosController : Controller
         ViewBag.Equipos = new SelectList(await _context.Equipos.OrderBy(e => e.Nombre).ToListAsync(), "Id", "Nombre", cromo?.EquipoId);
         ViewBag.Albumes = new SelectList(await _context.Albumes.OrderBy(a => a.Nombre).ToListAsync(), "Id", "Nombre", cromo?.AlbumId);
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> AgregarAColeccion(int cromoId)
+    {
+        int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+        if (usuarioId is null)
+            return RedirectToAction("Index", "Login");
+
+        var uc = await _context.UsuarioCromos
+            .FirstOrDefaultAsync(x => x.UsuarioId == usuarioId && x.CromoId == cromoId);
+
+        if (uc == null)
+        {
+            _context.UsuarioCromos.Add(new UsuarioCromo
+            {
+                UsuarioId = usuarioId.Value,
+                CromoId = cromoId,
+                FechaAdquisicion = DateTime.Today,
+                Estado = EstadoCromo.Nuevo,
+                Cantidad = 1
+            });
+            TempData["Success"] = "Cromo agregado a tu colección.";
+        }
+        else
+        {
+            uc.Cantidad++;
+            TempData["Success"] = $"Ahora tienes {uc.Cantidad} de este cromo.";
+        }
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
+    }
 }

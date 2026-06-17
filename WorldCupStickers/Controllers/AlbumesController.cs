@@ -26,6 +26,21 @@ public class AlbumesController : Controller
 
         ViewBag.Search = search;
         var albumes = await query.OrderByDescending(a => a.Anio).ToListAsync();
+
+        int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+        if (usuarioId.HasValue)
+        {
+            var misCromos = await _context.UsuarioCromos
+                .Where(uc => uc.UsuarioId == usuarioId)
+                .Select(uc => uc.CromoId)
+                .ToListAsync();
+            ViewBag.MisCromosCount = misCromos.Count;
+        }
+        else
+        {
+            ViewBag.MisCromosCount = 0;
+        }
+
         return View(albumes);
     }
 
@@ -44,6 +59,23 @@ public class AlbumesController : Controller
 
         if (album == null)
             return NotFound();
+
+        int? usuarioId = HttpContext.Session.GetInt32("UsuarioId");
+        if (usuarioId.HasValue)
+        {
+            var misCromosIds = await _context.UsuarioCromos
+                .Where(uc => uc.UsuarioId == usuarioId)
+                .Select(uc => uc.CromoId)
+                .ToListAsync();
+
+            ViewBag.MisCromosIds = misCromosIds;
+            ViewBag.MisCromosCount = misCromosIds.Count;
+        }
+        else
+        {
+            ViewBag.MisCromosIds = new List<int>();
+            ViewBag.MisCromosCount = 0;
+        }
 
         return View(album);
     }

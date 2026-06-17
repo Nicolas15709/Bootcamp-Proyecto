@@ -24,6 +24,9 @@ public class UsuarioCromo
     [Display(Name = "Estado")]
     public EstadoCromo Estado { get; set; }
 
+    [Display(Name = "Cantidad")]
+    public int Cantidad { get; set; } = 1;
+
     // Relaciones
     [ForeignKey(nameof(UsuarioId))]
     public Usuario? Usuario { get; set; }
