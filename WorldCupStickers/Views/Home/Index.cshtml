@@ -3,106 +3,74 @@
     ViewData["Title"] = "Dashboard";
 }
 
-<!-- Hero -->
-<div class="wcs-hero">
-    <div class="row align-items-center">
-        <div class="col-lg-8">
-            <div class="hero-eyebrow">Gestor de Cromos Mundialistas</div>
-            <h1 class="hero-title">WORLD CUP<br><span>STICKER MANAGER</span></h1>
-            <p class="hero-sub">Administra tu colección del mundial. Jugadores, equipos, álbumes y cromos con fotos reales.</p>
-            <div class="hero-btns">
-                <a asp-controller="Cromos" asp-action="Create" class="btn btn-wcs">
-                    <i class="bi bi-plus-circle me-1"></i>Nuevo cromo
-                </a>
-                <a asp-controller="Albumes" asp-action="Index" class="btn btn-outline-wcs">
-                    Ver álbumes
-                </a>
-            </div>
+<section class="stadium-hero">
+    <div class="container position-relative stadium-content">
+        <div class="stadium-title-wrap">
+            <h1 class="stadium-title">
+                <span class="stadium-line1">WORLD CUP</span>
+                <span class="stadium-line2">STICKER MANAGER</span>
+            </h1>
+            <p class="stadium-desc">
+                Administra tu colección del mundial. Jugadores, equipos, álbumes y
+                cromos con fotos reales en una experiencia vibrante.
+            </p>
+            <a asp-controller="Cromos" asp-action="Create" class="btn btn-stadium-cta">
+                <i class="bi bi-dribbble me-2"></i>Nuevo cromo
+            </a>
         </div>
     </div>
-</div>
+</section>
 
-<!-- Stat cards -->
-<div class="row g-3 mb-5">
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Paises" asp-action="Index" class="stat-card stat-azul">
-            <i class="bi bi-globe-americas stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalPaises">@Model.TotalPaises</div>
-            <div class="stat-label">Países</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Equipos" asp-action="Index" class="stat-card stat-verde">
-            <i class="bi bi-shield-fill stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalEquipos">@Model.TotalEquipos</div>
-            <div class="stat-label">Equipos</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Jugadores" asp-action="Index" class="stat-card stat-morado">
-            <i class="bi bi-person-fill stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalJugadores">@Model.TotalJugadores</div>
-            <div class="stat-label">Jugadores</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Cromos" asp-action="Index" class="stat-card stat-rojo">
-            <i class="bi bi-card-image stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalCromos">@Model.TotalCromos</div>
-            <div class="stat-label">Cromos</div>
-        </a>
-    </div>
-    <div class="col-6 col-md-4 col-lg">
-        <a asp-controller="Albumes" asp-action="Index" class="stat-card stat-dorado">
-            <i class="bi bi-collection-fill stat-icon"></i>
-            <div class="stat-num" data-target="@Model.TotalAlbumes">@Model.TotalAlbumes</div>
-            <div class="stat-label">Álbumes</div>
-        </a>
-    </div>
-</div>
-
-<!-- Últimos cromos -->
-<div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-title"><span class="title-bar"></span>Últimos cromos</h2>
-    <a asp-controller="Cromos" asp-action="Index" class="btn btn-outline-wcs btn-sm">
-        Ver todos <i class="bi bi-arrow-right ms-1"></i>
-    </a>
-</div>
-
-@if (!Model.UltimosCromos.Any())
-{
-    <div class="alert alert-info">Aún no hay cromos registrados.</div>
-}
-else
-{
-    <div class="cromos-grid mb-5">
-        @foreach (var cromo in Model.UltimosCromos)
+<!-- ÚLTIMOS CROMOS -->
+<section class="st-section">
+    <div class="container">
+        <div class="st-section-head">
+            <h2 class="st-section-title">ÚLTIMOS <span>CROMOS</span></h2>
+            <a asp-controller="Cromos" asp-action="Index" class="st-see-all">
+                Ver todos <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        @if (!Model.UltimosCromos.Any())
         {
-            <partial name="_CardCromo" model="cromo" />
+            <p class="text-muted">Aún no hay cromos registrados.</p>
         }
-    </div>
-}
-
-<!-- Equipos destacados -->
-<div class="d-flex align-items-center justify-content-between mb-3">
-    <h2 class="section-title"><span class="title-bar"></span>Equipos destacados</h2>
-    <a asp-controller="Equipos" asp-action="Index" class="btn btn-outline-wcs btn-sm">
-        Ver todos <i class="bi bi-arrow-right ms-1"></i>
-    </a>
-</div>
-
-@if (!Model.EquiposDestacados.Any())
-{
-    <div class="alert alert-info">Aún no hay equipos registrados.</div>
-}
-else
-{
-    <div class="row g-4">
-        @foreach (var equipo in Model.EquiposDestacados)
+        else
         {
-            <div class="col-md-6 col-lg-4">
-                <partial name="_CardEquipo" model="equipo" />
+            <div class="st-cards-row">
+                @foreach (var cromo in Model.UltimosCromos)
+                {
+                    <div class="st-card-slot">
+                        <partial name="_CardCromo" model="cromo" />
+                    </div>
+                }
             </div>
         }
     </div>
-}
+</section>
+
+<!-- EQUIPOS DESTACADOS -->
+<section class="st-section">
+    <div class="container">
+        <div class="st-section-head">
+            <h2 class="st-section-title">EQUIPOS <span>DESTACADOS</span></h2>
+            <a asp-controller="Equipos" asp-action="Index" class="st-see-all">
+                Ver todos <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+        @if (!Model.EquiposDestacados.Any())
+        {
+            <p class="text-muted">Aún no hay equipos.</p>
+        }
+        else
+        {
+            <div class="row g-4">
+                @foreach (var equipo in Model.EquiposDestacados)
+                {
+                    <div class="col-md-6 col-xl-4">
+                        <partial name="_CardEquipo" model="equipo" />
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
