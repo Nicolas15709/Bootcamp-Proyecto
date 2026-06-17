@@ -50,8 +50,8 @@ public static class DbInitializer
         // ---------------- ÁLBUM (1) ----------------
         var album = new Album
         {
-            Nombre = "Mundial Qatar 2022",
-            Anio = 2022,
+            Nombre = "Mundial 2026",
+            Anio = 2026,
             CantidadCromos = 670,
             EdicionEspecial = true
         };
@@ -97,7 +97,7 @@ public static class DbInitializer
             cromos.Add(new Cromo
             {
                 NumeroCromo = numero,
-                Edicion = "Qatar 2022",
+                Edicion = "Mundial 2026",
                 ValorMercado = valores[numero - 1],
                 FotoUrl = Foto(j.Nombre),
                 JugadorId = j.Id,
@@ -258,7 +258,7 @@ public static class DbInitializer
             cromos.Add(new Cromo
             {
                 NumeroCromo  = siguienteNum++,
-                Edicion      = "Qatar 2022",
+                Edicion      = "Mundial 2026",
                 ValorMercado = valoresBase[idx++ % valoresBase.Length],
                 FotoUrl      = fotoUrl ?? Placeholder(j.Nombre),
                 JugadorId    = j.Id,

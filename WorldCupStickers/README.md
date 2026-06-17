@@ -68,7 +68,7 @@ dotnet tool install --global dotnet-ef
 ```
 
 ### 4. Un editor o IDE  *(recomendado)*
-- **Visual Studio 2022/2026** (Community es gratis) — incluye todo lo anterior, o
+- **Visual Studio 2026/2026** (Community es gratis) — incluye todo lo anterior, o
 - **Visual Studio Code** + la extensión de C#.
 
 ### 5. Navicat o SQL Server Management Studio (SSMS)  *(opcional)*

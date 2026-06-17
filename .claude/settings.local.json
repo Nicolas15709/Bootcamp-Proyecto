@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet --version)",
+      "Bash(dotnet --list-sdks)",
+      "Bash(dotnet ef *)",
+      "Bash(sqllocaldb info *)",
+      "Bash(dotnet new *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet build *)",
+      "PowerShell(& sqllocaldb info)"
+    ]
+  }
+}

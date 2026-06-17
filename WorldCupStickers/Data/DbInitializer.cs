@@ -83,8 +83,8 @@ public static class DbInitializer
         // ---------------- ÁLBUM (1) ----------------
         var album = new Album
         {
-            Nombre = "Mundial Qatar 2022",
-            Anio = 2022,
+            Nombre = "Mundial 2026",
+            Anio = 2026,
             CantidadCromos = 670,
             EdicionEspecial = true
         };
