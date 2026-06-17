@@ -311,6 +311,46 @@ img {
   animation: signal 2.2s infinite;
 }
 
+/* User chip + logout */
+.nav-user { margin-left: 1rem; }
+
+.nav-user-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: var(--gold-3, #D4AF37);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.nav-user-chip i { font-size: 1rem; }
+.nav-user-name { color: var(--text, #fdf0d5); }
+
+.nav-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(200, 16, 46, 0.12);
+  border: 1px solid rgba(200, 16, 46, 0.3);
+  color: #ff6b84;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s, color 0.2s;
+}
+
+.nav-logout:hover {
+  background: rgba(200, 16, 46, 0.25);
+  color: #ff8a9e;
+  transform: translateY(-1px);
+}
+
 .btn {
   border-radius: 999px;
   font-weight: 700;
@@ -888,6 +928,7 @@ img {
   min-height: 21rem;
   border-radius: 28px;
   transform-style: preserve-3d;
+  overflow: hidden;
 }
 
 .cromo-card-inner {
@@ -980,25 +1021,25 @@ img {
   background:
     repeating-linear-gradient(
       0deg,
-      transparent 0 4px,
-      rgba(255, 255, 255, 0.03) 4px 5px
+      transparent 0 6px,
+      rgba(255, 255, 255, 0.025) 6px 7px
     ),
     linear-gradient(
       135deg,
-      rgba(255, 0, 132, 0.4),
-      rgba(255, 196, 0, 0.32),
-      rgba(0, 255, 204, 0.28),
-      rgba(78, 115, 255, 0.32),
-      rgba(255, 0, 132, 0.4)
+      rgba(255, 255, 255, 0.12),
+      rgba(200, 220, 255, 0.08),
+      rgba(255, 255, 255, 0.14),
+      rgba(180, 210, 255, 0.08),
+      rgba(255, 255, 255, 0.12)
     );
-  mix-blend-mode: color-dodge;
+  mix-blend-mode: screen;
   background-position: 0 0, var(--mx, 50%) var(--my, 50%);
   background-size: auto, 300% 300%;
-  transition: opacity 220ms ease;
+  transition: opacity 280ms ease;
 }
 
 .cromo-card:hover .cromo-holo {
-  opacity: 0.58;
+  opacity: 0.7;
 }
 
 .cromo-glare {

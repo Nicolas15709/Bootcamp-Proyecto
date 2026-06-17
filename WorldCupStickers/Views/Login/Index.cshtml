@@ -7,91 +7,315 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Login — WCS</title>
+    <title>Acceso — World Cup Sticker Manager</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+
     <style>
+        :root {
+            --gold-1: #7a5f10;
+            --gold-3: #D4AF37;
+            --gold-5: #F5D76E;
+            --dark-1: #070D1A;
+        }
+
+        * { box-sizing: border-box; }
+
         body {
             min-height: 100vh;
+            margin: 0;
+            font-family: 'Inter', system-ui, sans-serif;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%);
+            position: relative;
+            overflow: hidden;
+            background: var(--dark-1);
         }
-        .login-card {
-            background: #fff;
-            border-radius: 1.25rem;
-            box-shadow: 0 20px 60px rgba(0,0,0,.4);
-            padding: 2.5rem 2rem;
+
+        /* Stadium background */
+        .login-bg {
+            position: fixed;
+            inset: 0;
+            background: url('/images/stadium-bg.png') center/cover no-repeat;
+            z-index: 0;
+            animation: bgZoom 24s ease-in-out infinite alternate;
+        }
+        @@keyframes bgZoom {
+            from { transform: scale(1); }
+            to   { transform: scale(1.08); }
+        }
+
+        /* Dark vignette over stadium */
+        .login-bg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 70% 70% at 50% 45%, rgba(3,6,13,.35) 0%, rgba(3,6,13,.82) 100%);
+        }
+
+        /* Floating gold particles */
+        .particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: var(--gold-3);
+            border-radius: 50%;
+            opacity: .5;
+            box-shadow: 0 0 8px var(--gold-3);
+            animation: floatUp linear infinite;
+        }
+        @@keyframes floatUp {
+            from { transform: translateY(110vh) scale(.6); opacity: 0; }
+            10%  { opacity: .6; }
+            90%  { opacity: .6; }
+            to   { transform: translateY(-10vh) scale(1); opacity: 0; }
+        }
+
+        /* Login panel — glass card */
+        .login-panel {
+            position: relative;
+            z-index: 2;
             width: 100%;
-            max-width: 400px;
+            max-width: 410px;
+            margin: 1rem;
+            padding: 2.75rem 2.25rem 2.25rem;
+            border-radius: 20px;
+            background: rgba(7, 13, 26, .72);
+            backdrop-filter: blur(22px) saturate(160%);
+            -webkit-backdrop-filter: blur(22px) saturate(160%);
+            box-shadow: 0 30px 80px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.06);
+            border: 1px solid rgba(255,255,255,.08);
+            animation: panelIn .7s cubic-bezier(.16,1,.3,1) both;
         }
-        .brand-badge {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #e8c94d, #d4a017);
-            color: #1a1a2e;
-            font-weight: 900;
-            font-size: 1.4rem;
-            width: 54px;
-            height: 54px;
-            border-radius: .75rem;
-            margin-bottom: .75rem;
+        @@keyframes panelIn {
+            from { opacity: 0; transform: translateY(30px) scale(.97); }
+            to   { opacity: 1; transform: translateY(0) scale(1); }
         }
-        .btn-login {
-            background: linear-gradient(135deg, #e8c94d, #d4a017);
-            border: none;
-            color: #1a1a2e;
+
+        /* Animated gold border glow */
+        .login-panel::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 21px;
+            padding: 1px;
+            background: linear-gradient(135deg, var(--gold-1), var(--gold-3), var(--gold-5), var(--gold-3), var(--gold-1));
+            background-size: 300% 300%;
+            animation: borderFlow 6s linear infinite;
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
+        }
+        @@keyframes borderFlow {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Brand */
+        .login-brand { text-align: center; margin-bottom: 1.75rem; }
+        .brand-ball {
+            width: 64px; height: 64px;
+            margin: 0 auto .9rem;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 50%;
+            background: radial-gradient(circle at 35% 30%, #fff 0%, #e8e8e8 35%, #b8b8b8 100%);
+            box-shadow: 0 0 0 3px rgba(212,175,55,.5), 0 8px 24px rgba(0,0,0,.5), 0 0 30px rgba(212,175,55,.35);
+            font-size: 2rem;
+            color: #1a1a1a;
+            animation: ballBounce 3s ease-in-out infinite;
+        }
+        @@keyframes ballBounce {
+            0%,100% { transform: translateY(0) rotate(-6deg); }
+            50%     { transform: translateY(-8px) rotate(6deg); }
+        }
+        .brand-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            letter-spacing: .05em;
+            line-height: .95;
+            margin: 0;
+            color: #fff;
+        }
+        .brand-title span {
+            display: block;
+            background: linear-gradient(90deg, var(--gold-3), var(--gold-5), var(--gold-3));
+            background-size: 200% auto;
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+        }
+        @@keyframes shimmer { to { background-position: 200% center; } }
+        .brand-sub {
+            margin-top: .4rem;
+            font-size: .72rem;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,.45);
+        }
+
+        /* Inputs */
+        .field { margin-bottom: 1.1rem; }
+        .field-label {
+            display: block;
+            font-size: .72rem;
             font-weight: 700;
-            padding: .65rem;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(212,175,55,.85);
+            margin-bottom: .4rem;
         }
-        .btn-login:hover { filter: brightness(1.1); color: #1a1a2e; }
+        .field-wrap {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,.05);
+            border: 1px solid rgba(255,255,255,.12);
+            border-radius: 11px;
+            transition: border-color .2s, box-shadow .2s, background .2s;
+        }
+        .field-wrap:focus-within {
+            border-color: var(--gold-3);
+            box-shadow: 0 0 0 3px rgba(212,175,55,.15);
+            background: rgba(255,255,255,.08);
+        }
+        .field-wrap i.lead-ic {
+            padding: 0 .85rem;
+            color: rgba(212,175,55,.7);
+            font-size: 1.05rem;
+        }
+        .field-wrap input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #fff;
+            font-size: .95rem;
+            padding: .8rem .25rem;
+        }
+        .field-wrap input::placeholder { color: rgba(255,255,255,.3); }
+        .toggle-pwd {
+            background: transparent; border: none;
+            color: rgba(255,255,255,.4);
+            padding: 0 .85rem; cursor: pointer;
+            transition: color .2s;
+        }
+        .toggle-pwd:hover { color: var(--gold-3); }
+
+        /* Submit */
+        .btn-kick {
+            width: 100%;
+            margin-top: .5rem;
+            padding: .85rem;
+            border: none;
+            border-radius: 11px;
+            font-weight: 800;
+            font-size: .9rem;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            color: var(--dark-1);
+            background: linear-gradient(135deg, var(--gold-1), var(--gold-3) 45%, var(--gold-5) 70%, var(--gold-3));
+            background-size: 200% auto;
+            box-shadow: 0 6px 22px rgba(212,175,55,.4), inset 0 1px 0 rgba(255,255,255,.25);
+            cursor: pointer;
+            transition: background-position .4s, box-shadow .3s, transform .12s;
+        }
+        .btn-kick:hover {
+            background-position: right center;
+            box-shadow: 0 8px 32px rgba(212,175,55,.6);
+            transform: translateY(-2px);
+        }
+        .btn-kick:active { transform: translateY(0) scale(.98); }
+
+        /* Error */
+        .login-error {
+            display: flex; align-items: center; gap: .5rem;
+            background: rgba(200,16,46,.14);
+            border: 1px solid rgba(200,16,46,.35);
+            color: #ff8a9e;
+            font-size: .82rem;
+            padding: .65rem .85rem;
+            border-radius: 10px;
+            margin-bottom: 1.1rem;
+            animation: shake .4s ease;
+        }
+        @@keyframes shake {
+            0%,100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+
+        .login-foot {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: .72rem;
+            color: rgba(255,255,255,.35);
+            letter-spacing: .04em;
+        }
+
+        @@media (prefers-reduced-motion: reduce) {
+            *, *::before { animation: none !important; }
+        }
     </style>
 </head>
 <body>
-    <div class="login-card">
-        <div class="text-center mb-4">
-            <div class="brand-badge">WC</div>
-            <h1 class="fs-4 fw-bold mb-1">World Cup Stickers</h1>
-            <p class="text-muted small mb-0">Ingresa con tu cuenta</p>
+    <div class="login-bg"></div>
+    <div class="particles" id="particles"></div>
+
+    <div class="login-panel">
+        <div class="login-brand">
+            <div class="brand-ball"><i class="bi bi-dribbble"></i></div>
+            <h1 class="brand-title">WORLD CUP<span>STICKER MANAGER</span></h1>
+            <div class="brand-sub">Acceso al vestuario</div>
         </div>
 
         @if (ViewBag.Error != null)
         {
-            <div class="alert alert-danger py-2 small">
-                <i class="bi bi-exclamation-circle me-1"></i>@ViewBag.Error
+            <div class="login-error">
+                <i class="bi bi-exclamation-octagon-fill"></i>
+                <span>@ViewBag.Error</span>
             </div>
         }
 
-        <form method="post">
+        <form method="post" autocomplete="on">
             @Html.AntiForgeryToken()
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Usuario</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-at"></i></span>
-                    <input type="text" name="nombreUsuario" class="form-control"
+            <div class="field">
+                <label class="field-label" for="nombreUsuario">Usuario</label>
+                <div class="field-wrap">
+                    <i class="bi bi-person-fill lead-ic"></i>
+                    <input type="text" name="nombreUsuario" id="nombreUsuario"
                            placeholder="tu_usuario" autofocus autocomplete="username" />
                 </div>
             </div>
 
-            <div class="mb-4">
-                <label class="form-label fw-semibold">Contraseña</label>
-                <div class="input-group">
-                    <input type="password" name="password" id="pwd" class="form-control"
+            <div class="field">
+                <label class="field-label" for="pwd">Contraseña</label>
+                <div class="field-wrap">
+                    <i class="bi bi-shield-lock-fill lead-ic"></i>
+                    <input type="password" name="password" id="pwd"
                            placeholder="••••••••" autocomplete="current-password" />
-                    <button class="btn btn-outline-secondary" type="button"
-                            onclick="togglePwd()">
+                    <button class="toggle-pwd" type="button" onclick="togglePwd()" aria-label="Mostrar contraseña">
                         <i class="bi bi-eye" id="eyeIcon"></i>
                     </button>
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-login w-100">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Entrar
+            <button type="submit" class="btn-kick">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Entrar al campo
             </button>
         </form>
+
+        <div class="login-foot">
+            <i class="bi bi-trophy-fill" style="color:var(--gold-3)"></i>
+            Gestor de Cromos Mundialistas &copy; @DateTime.Now.Year
+        </div>
     </div>
 
     <script>
@@ -102,6 +326,22 @@
             icon.classList.toggle('bi-eye');
             icon.classList.toggle('bi-eye-slash');
         }
+
+        // Generate floating particles
+        (() => {
+            const box = document.getElementById('particles');
+            const N = 18;
+            for (let i = 0; i < N; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + 'vw';
+                p.style.animationDuration = (6 + Math.random() * 8) + 's';
+                p.style.animationDelay = (Math.random() * 8) + 's';
+                const s = 2 + Math.random() * 4;
+                p.style.width = p.style.height = s + 'px';
+                box.appendChild(p);
+            }
+        })();
     </script>
 </body>
 </html>

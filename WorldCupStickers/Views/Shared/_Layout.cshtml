@@ -54,10 +54,28 @@
                         <li class="nav-item"><a class="nav-link @Active("Cromos")" asp-controller="Cromos" asp-action="Index">Cromos</a></li>
                         <li class="nav-item"><a class="nav-link @Active("Albumes")" asp-controller="Albumes" asp-action="Index">Albumes</a></li>
                     </ul>
-                    <div class="nav-signal d-none d-lg-flex">
-                        <span class="nav-signal-dot"></span>
-                        <span>Live collection</span>
-                    </div>
+                    @{
+                        var usuarioNombre = Context.Session.GetString("UsuarioNombre");
+                    }
+                    @if (!string.IsNullOrEmpty(usuarioNombre))
+                    {
+                        <div class="nav-user d-flex align-items-center gap-2">
+                            <span class="nav-user-chip">
+                                <i class="bi bi-person-circle"></i>
+                                <span class="nav-user-name">@usuarioNombre</span>
+                            </span>
+                            <a class="nav-logout" asp-controller="Login" asp-action="Salir" title="Cerrar sesión">
+                                <i class="bi bi-box-arrow-right"></i>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="nav-signal d-none d-lg-flex">
+                            <span class="nav-signal-dot"></span>
+                            <span>Live collection</span>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
@@ -77,7 +95,6 @@
                 <p class="footer-copy mb-0">Archivo visual para paises, equipos, jugadores, cromos y albumes.</p>
             </div>
             <div class="footer-meta">
-                <span class="footer-pill">Redesign branch: diseno</span>
                 <span class="footer-year">&copy; @DateTime.Now.Year</span>
             </div>
         </div>
